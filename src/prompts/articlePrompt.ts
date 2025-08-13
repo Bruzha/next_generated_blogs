@@ -123,11 +123,15 @@ Your task is to write an informative, SEO-friendly, **engaging** article in Engl
 2. **Main Content**  
    - Use clear **H2** and **H3** subheadings  
    - Include elements that naturally fit into the topic (choose 1-2 of the following): lists, comparisons, use cases, internal quotes, infographics, mini-cases, FAQ, etc. Feel free to experiment with content elements, add your own
-   - Include one image using:  
-     \`<img src="" alt="[IMAGE: a detailed description related to ${topic} and ${title}]">\`  
-     - Avoid text on the image  
-     - Be descriptive but concise  
-     - Avoid generic phrases like "image of" or "photo of"
+   - Add one image using:
+    \`<img src="" alt="[IMAGE: detailed description related to ${topic} and ${title}]">\`
+    It is desirable that the image description also contain the following parts:
+    - the main subject of the image (e.g. "a young male programmer"), it can be a person, animal, object, room, interior, laptop screen, etc.
+    - key features of the main subject (e.g. "with glasses, short dark hair, blue eyes, light stubble and a knitted yellow sweater")
+    - background and environment (e.g. "he is sitting at a table with a black laptop, half-sideways to the viewer")
+    - color and mood (e.g. "he is in a productive, inspired atmosphere and positive mood")
+    - emphasis - what should be focused on in the image (e.g. "he is relaxed and typing on a laptop with a happy smile on his face").
+    Thus, a scene description like this can be obtained: "a young male programmer with glasses, short dark hair, blue eyes, light stubble and a knitted yellow sweater sits at a table with a black laptop, half sideways to the viewer. He is in a productive, inspired atmosphere and a positive mood. He is relaxed and with a joyful smile on his face, typing on the laptop." The scene should correspond to the topic and content of the article.
 
 3. **Conclusion**  
    - Summarize main takeaways or offer a practical next step  

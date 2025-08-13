@@ -13,6 +13,7 @@ export default async function generateImage(prompt: string): Promise<string | nu
       n: 1,
       size: '1024x1024',
       model: 'dall-e-3',
+      style: 'vivid',
     });
 
     const imageUrl = response.data?.[0]?.url;
@@ -60,8 +61,8 @@ async function fetchAndOptimizeImage(imageUrl: string): Promise<string | null> {
         withoutEnlargement: true,
       })
       .webp({
-        quality: 60,
-        alphaQuality: metadata.hasAlpha ? 60 : undefined,
+        quality: 70,
+        alphaQuality: metadata.hasAlpha ? 70 : undefined,
       })
       .toBuffer();
 
@@ -73,39 +74,3 @@ async function fetchAndOptimizeImage(imageUrl: string): Promise<string | null> {
     return null;
   }
 }
-
-
-// async function fetchAndOptimizeImage(imageUrl: string): Promise<string | null> {
-//   try {
-//     const response = await fetch(imageUrl, {
-//   timeout: 20000,});
-//     if (!response.ok) {
-//       throw new Error(`Failed to fetch image: ${response.statusText}`);
-//     }
-
-//     const arrayBuffer = await response.arrayBuffer();
-//     const buffer = Buffer.from(arrayBuffer);
-
-//     const image = sharp(buffer);
-//     const metadata = await image.metadata();
-
-//     const webpBuffer = await image
-//       .resize({
-//         width: 1024,
-//         fit: sharp.fit.inside,
-//         withoutEnlargement: true,
-//       })
-//       .webp({
-//         quality: 80,
-//         alphaQuality: metadata.hasAlpha ? 80 : undefined,
-//       })
-//       .toBuffer();
-
-//     const base64String = webpBuffer.toString('base64');
-//     return `data:image/webp;base64,${base64String}`;
-//       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   } catch (error: any) {
-//     console.error("Error optimizing image:", error);
-//     return null;
-//   }
-// }
