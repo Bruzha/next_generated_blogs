@@ -139,6 +139,8 @@ export async function generateContentPlan(
     return topics[Math.floor(Math.random() * topics.length)];
   });
 
+  console.log("topicsForArticles: ", topicsForArticles);
+
   const combinedPromptContentPlan = getContentPlanPrompt(
     topicsForArticles,
     existingTitles,
@@ -160,7 +162,7 @@ export async function generateContentPlan(
 
   const articlePromises = [];
 
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < 2; i++) {
     const contentPlan = combinedContentPlan[i];
     const date = articleDates[i].toLocaleDateString('en-CA', {
       year: 'numeric',
