@@ -19,7 +19,6 @@ export default function IndexPage() {
   const sortedPosts = [...posts].sort(
   (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
 );
-  console.log("posts: ", posts);
   const initialized = useSelector((state: RootState) => state.posts.initialized);
   const dispatch = useDispatch<AppDispatch>();
 

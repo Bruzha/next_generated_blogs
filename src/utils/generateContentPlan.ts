@@ -135,11 +135,10 @@ export async function generateContentPlan(
   const existingTitles = posts.map(post => post.title);
   const articleDates = getTuesdaysAndFridaysForNextMonth();
 
+
   const topicsForArticles = Array.from({ length: articleDates.length }, () => {
     return topics[Math.floor(Math.random() * topics.length)];
   });
-
-  console.log("topicsForArticles: ", topicsForArticles);
 
   const combinedPromptContentPlan = getContentPlanPrompt(
     topicsForArticles,
@@ -149,7 +148,6 @@ export async function generateContentPlan(
   );
 
   const combinedContentPlan = await fetchContentPlan(combinedPromptContentPlan);
-  console.log('combinedContentPlan: ', combinedContentPlan);
 
   if (!combinedContentPlan || !Array.isArray(combinedContentPlan)) {
     console.error('❌ Failed to fetch combined content plan or result is not an array');
@@ -162,7 +160,7 @@ export async function generateContentPlan(
 
   const articlePromises = [];
 
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 1; i++) {
     const contentPlan = combinedContentPlan[i];
     const date = articleDates[i].toLocaleDateString('en-CA', {
       year: 'numeric',

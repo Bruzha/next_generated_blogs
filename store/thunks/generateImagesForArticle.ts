@@ -1,7 +1,9 @@
 import { getImage } from "@/prompts/imagePrompt";
 
 export default async function generateImagesForArticle(bodyContent: string) {
-  const imagePlaceholderRegex = /<img src="" alt="\[IMAGE:(.*?)\].*?">/gi;
+  //const imagePlaceholderRegex = /<img src="" alt="\[IMAGE:(.*?)\].*?">/gi;
+  const imagePlaceholderRegex = /<img\s+src=""\s+data-image-description="\[IMAGE:(.*?)\]"\s+alt="(.*?)">/gi;
+
   let match;
   let modifiedBodyContent = bodyContent;
   let image;

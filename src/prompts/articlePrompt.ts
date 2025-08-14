@@ -36,7 +36,7 @@ Your task is to write an informative, SEO-friendly, **engaging** article in Engl
   - Additional design that may be useful to choose from: tables, numbered and/or bullet lists, icons and  emoji (for example: ❌, ✅, ✔️, ❗, ❓, ❕, ❔, 🏷️, etc.), color blocks, dividers, frames, etc.
 
    - Add (anywhere in the article) one image using:
-    \`<img src="" alt="[IMAGE: detailed description related to ${topic} and ${title}]">\`
+    \`<img src="" data-image-description="[IMAGE: detailed description related to ${topic} and ${title}]" alt="alt text">\`
     It is desirable that the image description also contain the following parts:
     - the main subject of the image, it can be a person, animal, object, room, interior, laptop screen, etc.
     - key features of the main subject
@@ -44,6 +44,11 @@ Your task is to write an informative, SEO-friendly, **engaging** article in Engl
     - color and mood
     - emphasis - what should be focused on in the image
     For example: "a young male programmer with glasses, short dark hair, blue eyes, light stubble and a knitted yellow sweater sits at a table with a black laptop, half sideways to the viewer. He is in a productive, inspired atmosphere and a positive mood. He is relaxed and with a joyful smile on his face, typing on the laptop." Be original and creative when describing, don't repeat yourself.
+    If you are describing a person or object with important anatomy/device (hands, face, laptop screen), it is better to explicitly state:
+      - "highly detailed realistic human face, natural hand position, correct anatomy, normal proportions"
+      - "laptop screen turned away from the viewer"
+      - "hands with five fingers, realistic joint position"
+    If the description mentions a laptop or computer, then you need to describe its position in relation to the viewer (for example, "the laptop is turned away from the viewer, its back side is black with the Apple logo")
 
 3. **Conclusion**  
    - Summarize main takeaways or offer a practical next step  
@@ -53,7 +58,7 @@ Your task is to write an informative, SEO-friendly, **engaging** article in Engl
    - Use the target keywords in:
      - Headings (H1–H3)
      - The first 100 words
-     - Image alt tags
+     - Alt tags for images: SEO-optimized alternative text that accurately describes the image based on ${topic}, ${keywords}, and ${title} up to 125 characters long, helps search engines and ensures accessibility. Example: "alt="Apple MacBook laptop on a wooden table by the window - home office for freelance"" (Keywords: laptop, Apple MacBook, home office, freelance. Specifics (where it is, what context. Up to 125 characters)
      - Meta title (max 60 chars)
      - Meta description (max 160 chars)
      - Internal links (2–4) to relevant CROCODE blog pages
