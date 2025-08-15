@@ -20,7 +20,7 @@ const postsSlice = createSlice({
       state.initialized = true;
     },
     addPost(state, action: PayloadAction<PostType>) {
-      state.data.unshift(action.payload); // можно сортировать отдельно, если нужно
+      state.data.unshift(action.payload);
     },
     updatePostStatus(state, action: PayloadAction<{ id: string; status: PostType['status'] }>) {
       const post = state.data.find(p => p._id === action.payload.id);

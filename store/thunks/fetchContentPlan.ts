@@ -1,33 +1,4 @@
-// export default async function fetchContentPlan(promptContentPlan: string) {
-//   try {
-//     const response = await fetch('/api/ai-assistant/content-plan', {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ prompt: promptContentPlan }),
-//     });
-
-//     const data = await response.json();
-//     console.log("1) data: ", data);
-
-//     if (!response.ok || !data.result) {
-//       console.error("Error fetching content plan:", data.error || "Unknown error");
-//       return null;
-//     }
-//     const text = data.result.text;
-//     const jsonString = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-//     const parsedResult = JSON.parse(jsonString);
-
-//     if (parsedResult.title === "Skipped" || parsedResult.keywords === "Skipped") {
-//       return null;
-//     }
-
-//     return parsedResult;
-//   } catch (error) {
-//     console.error("Error in fetchContentPlan:", error);
-//     return null;
-//   }
-// }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function fetchContentPlan(promptContentPlan: string): Promise<any[] | null> {
     try {
         const response = await fetch('/api/ai-assistant/content-plan', {
