@@ -89,12 +89,13 @@ export async function generateImageWithFlux(
   imageBase64: string
 ): Promise<string | null> {
   try {
+    const resizedImage = await resizeBase64Image(imageBase64, 1024, 1024);
     const result = await fal.subscribe("fal-ai/flux/dev/image-to-image", {
       input: {
-        image_url: imageBase64,
+        image_url: resizedImage,
         prompt,
-        strength: 0.8,
-        guidance_scale: 3.5,
+        strength: 0.9,
+        guidance_scale: 5,
         num_inference_steps: 40,
       },
       logs: true,
@@ -131,4 +132,19 @@ async function fetchAndOptimizeImage(imageUrl: string): Promise<string | null> {
     console.error("Error optimizing Flux image:", err);
     return null;
   }
+}
+
+async function resizeBase64Image(base64: string, width: number, height: number): Promise<string> {
+  const base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
+  const buffer = Buffer.from(base64Data, "base64");
+
+  const resizedBuffer = await sharp(buffer)
+    .resize(width, height, {
+      fit: "cover",
+    })
+    .toFormat("png")
+    .toBuffer();
+
+  const resizedBase64 = `data:image/png;base64,${resizedBuffer.toString("base64")}`;
+  return resizedBase64;
 }
