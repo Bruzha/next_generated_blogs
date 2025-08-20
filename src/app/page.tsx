@@ -100,6 +100,7 @@ export default function IndexPage() {
     }
   };
 
+  // Удаление постов из Sanity
   const handleDeletePosts = async (postIds: string[]) => {
     if (postIds.length === 0) return;
 
@@ -107,10 +108,7 @@ export default function IndexPage() {
     setLoading(true);
 
     try {
-      // Удаление постов из Sanity
       await Promise.all(postIds.map(id => client.delete(id)));
-
-      // Обновление состояния Redux
       dispatch(setPosts(posts.filter(post => !postIds.includes(post._id))));
     } catch (error) {
       console.error('❌ Error deleting posts:', error);
