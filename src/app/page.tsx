@@ -67,6 +67,7 @@ export default function IndexPage() {
 
   // Публикация
   const handlePublication = async () => {
+    handleLinkedInLogin();
     setLoadingStage("publishing");
     setLoading(true);
     try {
@@ -118,6 +119,9 @@ export default function IndexPage() {
     }
   };
 
+  const handleLinkedInLogin = () => {
+    window.location.href = '/api/auth/linkedin';
+  };
 
   return (
     <main className="main">
@@ -144,6 +148,9 @@ export default function IndexPage() {
               Publication
             </button>
           </div>
+          <button className="main__publicationButton" onClick={() => window.location.href = '/api/auth/linkedin'}>
+              Войти через LinkedIn
+          </button>
           <PostTable posts={sortedPosts} onPostUpdate={handlePostUpdate} onDeletePosts={handleDeletePosts} />
         </>
       )}
