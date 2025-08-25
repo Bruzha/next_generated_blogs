@@ -147,10 +147,10 @@ export default function IndexPage() {
             >
               Publication
             </button>
-          </div>
-          <button className="main__publicationButton" onClick={() => window.location.href = '/api/auth/linkedin'}>
+            <button className="main__publicationButton" onClick={() => window.location.href = '/api/auth/linkedin'}>
               Войти через LinkedIn
-          </button>
+            </button>
+          </div>
           <PostTable posts={sortedPosts} onPostUpdate={handlePostUpdate} onDeletePosts={handleDeletePosts} />
         </>
       )}

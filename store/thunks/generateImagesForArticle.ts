@@ -12,7 +12,7 @@ export default async function generateImagesForArticle(bodyContent: string) {
       const imageResponse = await fetch('/api/ai-assistant/image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: imageDescription }), // 👈 просто передаём описание
+        body: JSON.stringify({ prompt: imageDescription }),
       });
 
       if (!imageResponse.ok) {

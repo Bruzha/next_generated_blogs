@@ -1,15 +1,19 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+// src/app/api/auth/linkedin/callback/route.ts
+import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { code, error } = req.query;
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const code = searchParams.get('code');
+  const error = searchParams.get('error');
+  console.log("code: ", code);
 
   if (error) {
-    return res.status(400).send('Ошибка авторизации');
+    return new NextResponse('Ошибка авторизации', { status: 400 });
   }
 
-  if (!code || typeof code !== 'string') {
-    return res.status(400).send('Нет кода авторизации');
+  if (!code) {
+    return new NextResponse('Нет кода авторизации', { status: 400 });
   }
 
   try {
@@ -18,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       new URLSearchParams({
         grant_type: 'authorization_code',
         code,
-        redirect_uri: process.env.LINKEDIN_REDIRECT_URI!,
+        redirect_uri: process.env.LINKEDIN_REDIRECT_URL!,
         client_id: process.env.LINKEDIN_CLIENT_ID!,
         client_secret: process.env.LINKEDIN_CLIENT_SECRET!
       }),
@@ -31,18 +35,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const { access_token, expires_in } = tokenResponse.data;
 
-    // Варианты:
-    // - сохранить в куки
-    // - сохранить в сессии
-    // - временно вывести на экран
-
-    res.status(200).json({
-      access_token,
-      expires_in
+    const response = NextResponse.redirect(new URL('/dashboard', req.url));
+    response.cookies.set('linkedin_token', access_token, {
+      httpOnly: true,
+      secure: true,
+      maxAge: expires_in,
+      path: '/',
+      sameSite: 'lax'
     });
+
+    return response;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     console.error(err.response?.data || err.message);
-    res.status(500).send('Ошибка при получении токена');
+    return new NextResponse('Ошибка при получении токена', { status: 500 });
   }
 }

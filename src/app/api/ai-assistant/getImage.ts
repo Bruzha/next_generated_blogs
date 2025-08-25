@@ -23,12 +23,12 @@ export function getImage(imageDescription: string): {
   }
 
   const prompt = `
-  Generate a realistic natural photo in which ${imageDescription}.
-  Use the style, color palette, and mood of the reference image,
-  but do not copy its content, subject, objects, or composition.
-  The result must be a completely new scene with unique elements,
-  only inspired by the artistic style of the reference image.
-  The output image must be exactly 1024x1024 pixels in resolution.
+  Generate a completely original, photorealistic image that accurately represents the following scene: ${imageDescription}.
+
+  Only use the *visual style*, *color palette*, and *overall mood* of the reference image — strictly as artistic inspiration. 
+  Do **not** copy or replicate any objects, subjects, layouts, or content from the reference. The final image must depict a **totally new and unique composition**, determined solely by the scene description above.
+
+  The result should look like a **real photograph** — realistic lighting, textures, and perspective — while creatively reflecting the reference style.
 
   Negative prompt: ${NEGATIVE_PROMPT}
 `.trim();
