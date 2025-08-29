@@ -2,11 +2,9 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  console.log("process.env.LINKEDIN_CLIENT_ID: ", process.env.LINKEDIN_CLIENT_ID);
-  console.log("process.env.LINKEDIN_CLIENT_SECRET: ", process.env.LINKEDIN_CLIENT_SECRET);
-  console.log("process.env.LINKEDIN_REDIRECT_URL: ", process.env.LINKEDIN_REDIRECT_URL);
-  const state = 'random_csrf_token_example_12345';
+  const state = 'r4aKnKKdBodm_csrf_to9kLSeCn_eExgaYAmpd2u8s6l1e_12345';
   const scope = ['w_organization_social', 'rw_organization_admin'].join(' ');
+
 
   const params = new URLSearchParams({
     response_type: 'code',
@@ -16,5 +14,6 @@ export async function GET() {
     state,
   });
   const url = `https://www.linkedin.com/oauth/v2/authorization?${params.toString()}`;
+  console.log("url: ", url);
   return NextResponse.redirect(url);
 }

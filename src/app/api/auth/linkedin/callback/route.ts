@@ -9,11 +9,11 @@ export async function GET(req: NextRequest) {
   console.log("code: ", code);
 
   if (error) {
-    return new NextResponse('Ошибка авторизации', { status: 400 });
+    return new NextResponse('Authorization error', { status: 400 });
   }
 
   if (!code) {
-    return new NextResponse('Нет кода авторизации', { status: 400 });
+    return new NextResponse('No authorization code', { status: 400 });
   }
 
   try {
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
 
     const { access_token, expires_in } = tokenResponse.data;
 
-    const response = NextResponse.redirect(new URL('/dashboard', req.url));
+    const response = NextResponse.redirect(new URL('/', req.url));
     response.cookies.set('linkedin_token', access_token, {
       httpOnly: true,
       secure: true,
@@ -49,6 +49,6 @@ export async function GET(req: NextRequest) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     console.error(err.response?.data || err.message);
-    return new NextResponse('Ошибка при получении токена', { status: 500 });
+    return new NextResponse('Error getting token', { status: 500 });
   }
 }

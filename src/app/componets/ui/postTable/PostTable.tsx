@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import "./style.scss";
+import { PortableTextBlock } from '@portabletext/types';
 
 export interface PostType {
   _id: string;
@@ -11,11 +12,12 @@ export interface PostType {
   slug: {
     current: string;
   };
-  publishedAt: string;
+  date: string;
+  desc: string;
   image?: string | null;
-  body: string;
+  content?:  PortableTextBlock[];
   bodyContent?: string;
-  status: string;
+  status?: string;
 }
 
 interface PostTableProps {
@@ -38,14 +40,14 @@ export default function PostTable({ posts, onPostUpdate, onDeletePosts }: PostTa
     });
   };
 
-  const handleCheckboxChange = (post: PostType) => {
-    if (post.status === 'Published') return;
+  // const handleCheckboxChange = (post: PostType) => {
+  //   if (post.status === 'Published') return;
 
-    const newStatus: PostType['status'] =
-      post.status === 'Planned for publication' ? 'Unpublished' : 'Planned for publication';
+  //   const newStatus: PostType['status'] =
+  //     post.status === 'Planned for publication' ? 'Unpublished' : 'Planned for publication';
 
-    onPostUpdate(post._id, newStatus);
-  };
+  //   onPostUpdate(post._id, newStatus);
+  // };
 
   const handleDeleteCheckboxChange = (postId: string) => {
     setSelectedForDeletion(prev =>
@@ -77,8 +79,7 @@ export default function PostTable({ posts, onPostUpdate, onDeletePosts }: PostTa
       <table className="table">
         <thead>
           <tr>
-            <th>Status Select</th>
-            <th>Status</th>
+            {/* <th>Status Select</th> */}
             <th>Date</th>
             <th>Title</th>
             <th>Delete</th>
@@ -87,16 +88,15 @@ export default function PostTable({ posts, onPostUpdate, onDeletePosts }: PostTa
         <tbody>
           {posts.map(post => (
             <tr key={post._id}>
-              <td>
+              {/* <td>
                 <input
                   type="checkbox"
                   disabled={post.status === 'Published'}
                   checked={post.status === 'Planned for publication'}
                   onChange={() => handleCheckboxChange(post)}
                 />
-              </td>
-              <td className="status">{post.status}</td>
-              <td>{format(new Date(post.publishedAt), 'dd.MM.yyyy')}</td>
+              </td> */}
+              <td> {post.date ? format(new Date(post.date), 'dd.MM.yyyy') : '—'}</td>
               <td className="link">
                 <Link href={`/article/${post.slug.current}`} className="blueLink">
                   {post.title}

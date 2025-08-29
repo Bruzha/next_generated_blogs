@@ -9,19 +9,30 @@ fal.config({
 
 export async function generateImageWithFlux(
   prompt: string,
-  imageBase64: string
+  imageBase64s: string[]
 ): Promise<string | null> {
   try {
-    const resizedImage = await resizeBase64Image(imageBase64, 1024, 1024);
-    const result = await fal.subscribe("fal-ai/flux/dev/image-to-image", {
+    if (!imageBase64s || imageBase64s.length === 0) {
+      throw new Error("No reference images provided");
+    }
+
+    const imageUrls: string[] = await Promise.all(
+      imageBase64s.map(async (base64) => {
+        const resized = await resizeBase64Image(base64, 1024, 748);
+        return await resized;
+      })
+    );
+
+    console.log("Prompt: ", prompt);
+
+    const result = await fal.subscribe("fal-ai/flux-pro/kontext/max/multi", {
       input: {
-        image_url: resizedImage,
         prompt,
-        strength: 0.85,
-        guidance_scale: 6.5,
-        num_inference_steps: 50,
+        image_urls: imageUrls,
+        guidance_scale: 7,
+        num_images: 1,
       },
-      logs: true,
+      logs: true
     });
 
     const generatedUrl = result.data?.images?.[0]?.url;
@@ -38,9 +49,15 @@ export async function generateImageWithFlux(
 }
 
 async function fetchAndOptimizeImage(imageUrl: string): Promise<string | null> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 60000); // 60 сек таймаут
+
   try {
-    const res = await fetch(imageUrl);
-    if (!res.ok) throw new Error(res.statusText);
+    console.log("Fetching image from URL:", imageUrl);
+
+    const res = await fetch(imageUrl, { signal: controller.signal });
+    if (!res.ok) throw new Error(`Fetch failed: ${res.statusText}`);
+
     const buffer = Buffer.from(await res.arrayBuffer());
     const image = sharp(buffer);
     const metadata = await image.metadata();
@@ -54,6 +71,8 @@ async function fetchAndOptimizeImage(imageUrl: string): Promise<string | null> {
   } catch (err) {
     console.error("Error optimizing Flux image:", err);
     return null;
+  } finally {
+    clearTimeout(timeout);
   }
 }
 
