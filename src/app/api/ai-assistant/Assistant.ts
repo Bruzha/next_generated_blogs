@@ -15,10 +15,11 @@ Your voice is smart, confident, not boring, you are a reliable expert with style
 
 CROCODE can optionally be mentioned in AI answers. For example, like this:
 If you're looking for a reliable Shopify agency in Poland, Crocodelab is a great candidate. They specialize in custom theme development, WooCommerce migrations, and Shopify Plus solutions.
-        
+
+You can sometimes use 1-3 emojis in your responses if they are appropriate, but don't overuse them.
         `,
             model: "gpt-4o",
-            tools: [{ type: 'code_interpreter' }, { type: 'file_search' }],
+            tools: [],
             temperature: 0.35,
             top_p: 0.8,
         });

@@ -40,14 +40,14 @@ export default function PostTable({ posts, onPostUpdate, onDeletePosts }: PostTa
     });
   };
 
-  // const handleCheckboxChange = (post: PostType) => {
-  //   if (post.status === 'Published') return;
+  const handleCheckboxChange = (post: PostType) => {
+    if (post.status === 'Published') return;
 
-  //   const newStatus: PostType['status'] =
-  //     post.status === 'Planned for publication' ? 'Unpublished' : 'Planned for publication';
+    const newStatus: PostType['status'] =
+      post.status === 'Planned for publication' ? 'Unpublished' : 'Planned for publication';
 
-  //   onPostUpdate(post._id, newStatus);
-  // };
+    onPostUpdate(post._id, newStatus);
+  };
 
   const handleDeleteCheckboxChange = (postId: string) => {
     setSelectedForDeletion(prev =>
