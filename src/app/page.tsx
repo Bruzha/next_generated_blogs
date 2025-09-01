@@ -49,54 +49,44 @@ export default function IndexPage() {
   // Обновление статуса поста
   const handlePostUpdate = async (postId: string, newStatus: PostType['status']) => {
     dispatch(updatePostStatus({ id: postId, status: newStatus }));
-    // if (newStatus === 'Planned for publication') {
-    //   setSelectedPosts(prev => [...prev, postId]);
-    // } else {
-    //   setSelectedPosts(prev => prev.filter(id => id !== postId));
-    // }
-    // setLoadingStage("status-update");
-    // setLoading(true);
-    // try {
-    //   const draftId = postId.startsWith('drafts.') ? postId : `drafts.${postId}`;
-    //   await client.patch(draftId).set({ status: newStatus }).commit();
-    // } catch (error) {
-    //   console.error(`❌ Error updating post status ${postId}:`, error);
-    // } finally {
-    //   setLoading(false);
-    // }
+    if (newStatus === 'Planned for publication') {
+      setSelectedPosts(prev => [...prev, postId]);
+    } else {
+      setSelectedPosts(prev => prev.filter(id => id !== postId));
+    }
+    setLoadingStage("status-update");
+    setLoading(true);
+    try {
+      const draftId = postId;
+      await client.patch(draftId).set({ status: newStatus }).commit();
+    } catch (error) {
+      console.error(`❌ Error updating post status ${postId}:`, error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Публикация
   // const handlePublication = async () => {
   //   setLoadingStage("publishing");
   //   setLoading(true);
+
   //   try {
   //     const postsToPublish = posts.filter(post => post.status === 'Planned for publication');
 
-  //     for (const post of postsToPublish) {
-  //       try {
-  //         const draftId = post._id.startsWith('drafts.') ? post._id : `drafts.${post._id}`;
-  //         const publishedId = draftId.replace('drafts.', '');
+  //     console.log("postsToPublish: ", postsToPublish)
 
-  //         await client
-  //         .transaction()
-  //         .createIfNotExists({
-  //           ...post,
-  //           _id: publishedId,
-  //           _type: 'articlesItem',
-  //           status: 'Published',
-  //         })
-  //         .delete(draftId)
-  //         .commit();
+  //     const res = await fetch('/api/auth/linkedin/publish', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ posts: postsToPublish })
+  //     });
 
+  //     if (!res.ok) throw new Error('Failed to publish on LinkedIn');
 
-  //         dispatch(updatePostStatus({ id: post._id, status: 'Published' }));
-  //       } catch (error) {
-  //         console.error(`❌ Error while publishing: ${post.title}`, error);
-  //       }
-  //     }
+  //     alert('Posts scheduled successfully!');
   //   } catch (error) {
   //     console.error('❌ Error while publishing posts:', error);
+  //     alert('Failed to schedule posts on LinkedIn');
   //   } finally {
   //     setLoading(false);
   //   }
@@ -107,9 +97,11 @@ export default function IndexPage() {
     setLoading(true);
 
     try {
-      const postsToPublish = posts;
+      const postsToPublish = posts.filter(post => post.status === 'Planned for publication');
 
-      console.log("postsToPublish: ", postsToPublish)
+      if (postsToPublish.length === 0) return;
+
+      console.log("postsToPublish: ", postsToPublish);
 
       const res = await fetch('/api/auth/linkedin/publish', {
         method: 'POST',
@@ -119,7 +111,20 @@ export default function IndexPage() {
 
       if (!res.ok) throw new Error('Failed to publish on LinkedIn');
 
-      alert('Posts scheduled successfully!');
+      // После успешной публикации обновляем статус
+      await Promise.all(postsToPublish.map(async (post) => {
+        try {
+          // Обновляем в Sanity
+          await client.patch(post._id).set({ status: 'Published' }).commit();
+          // Обновляем в Redux
+          dispatch(updatePostStatus({ id: post._id, status: 'Published' }));
+        } catch (err) {
+          console.error(`❌ Error updating status for post ${post._id}:`, err);
+        }
+      }));
+
+      alert('Posts published successfully!');
+
     } catch (error) {
       console.error('❌ Error while publishing posts:', error);
       alert('Failed to schedule posts on LinkedIn');
@@ -127,7 +132,6 @@ export default function IndexPage() {
       setLoading(false);
     }
   };
-
 
   const handleDeletePosts = async (postIds: string[]) => {
     if (postIds.length === 0) return;
@@ -152,7 +156,7 @@ export default function IndexPage() {
         <LoadingIndicator stage={loadingStage} />
       ) : (
         <>
-          <h1 className="main__title">Articles for the tarot blog</h1>
+          <h1 className="main__title">Articles for the CROCODE blog</h1>
           <div className="main__buttonContainer">
             <button
               className={`blueButton ${loading ? 'loading' : ''}`}
@@ -168,11 +172,8 @@ export default function IndexPage() {
               onClick={handlePublication}
               disabled={loading}
             >
-              Publication
+              Publish on LinkedIn
             </button>
-            <button className="main__publicationButton" onClick={() => window.location.href = '/api/auth/linkedin'}>
-              Login with LinkedIn
-             </button>
           </div>
           <PostTable posts={sortedPosts} onPostUpdate={handlePostUpdate} onDeletePosts={handleDeletePosts} />
         </>

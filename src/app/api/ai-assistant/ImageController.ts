@@ -29,7 +29,7 @@ export async function generateImageWithFlux(
       input: {
         prompt,
         image_urls: imageUrls,
-        guidance_scale: 7,
+        guidance_scale: 7.5,
         num_images: 1,
       },
       logs: true
@@ -50,7 +50,7 @@ export async function generateImageWithFlux(
 
 async function fetchAndOptimizeImage(imageUrl: string): Promise<string | null> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 60000); // 60 сек таймаут
+  const timeout = setTimeout(() => controller.abort(), 120000); // 60 сек таймаут
 
   try {
     console.log("Fetching image from URL:", imageUrl);

@@ -67,11 +67,11 @@ export default function PostTable({ posts, onPostUpdate, onDeletePosts }: PostTa
 
   return (
     <>
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', marginBottom: '1rem' }}>
         <button className="blueButton" onClick={handleSelectAll}>
           Select all
         </button>
-        <button className="blueButton" onClick={handleDeleteSelected}>
+        <button className="redButton" onClick={handleDeleteSelected}>
           Delete selected
         </button>
       </div>
@@ -79,23 +79,27 @@ export default function PostTable({ posts, onPostUpdate, onDeletePosts }: PostTa
       <table className="table">
         <thead>
           <tr>
-            {/* <th>Status Select</th> */}
+            <th>Publish Select</th>
+            <th>Status</th>
             <th>Date</th>
             <th>Title</th>
-            <th>Delete</th>
+            <th>Delete Select</th>
           </tr>
         </thead>
         <tbody>
           {posts.map(post => (
             <tr key={post._id}>
-              {/* <td>
+              <td>
                 <input
                   type="checkbox"
                   disabled={post.status === 'Published'}
                   checked={post.status === 'Planned for publication'}
                   onChange={() => handleCheckboxChange(post)}
                 />
-              </td> */}
+              </td>
+              <td>
+                <p>{post.status}</p>
+              </td>
               <td> {post.date ? format(new Date(post.date), 'dd.MM.yyyy') : '—'}</td>
               <td className="link">
                 <Link href={`/article/${post.slug.current}`} className="blueLink">
