@@ -47,4 +47,12 @@ button {
   background-color: #d81d1d;     
 }
 
+.greenButton {
+  background-color: #16a34a;             
+}
+
+.greenButton:hover {
+  background-color: #15803d;     
+}
+
 

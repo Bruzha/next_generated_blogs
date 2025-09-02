@@ -29,7 +29,7 @@ const getMessage = (
     case 'image-generation':
       return 'Generating images...';
     case 'publishing':
-      return 'Publishing articles...';
+      return 'Publishing article/s...';
     case 'done':
       return 'Generation complete!';
     case 'status-update':

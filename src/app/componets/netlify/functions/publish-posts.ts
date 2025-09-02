@@ -193,6 +193,7 @@ const handler: Handler = async () => {
 
     let token = auth.accessToken;
     const expiresAt = new Date(auth.expiresAt);
+    console.log("token 1: ", token)
 
     // 2. Проверяем, не истек ли токен
     if (expiresAt.getTime() < Date.now()) {
@@ -209,6 +210,7 @@ const handler: Handler = async () => {
       );
 
       token = refreshResponse.data.access_token;
+      console.log("token 2: ", token)
       const newExpiresAt = new Date(Date.now() + refreshResponse.data.expires_in * 1000).toISOString();
 
       await client.createOrReplace({
