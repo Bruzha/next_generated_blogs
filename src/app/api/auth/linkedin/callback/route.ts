@@ -34,18 +34,18 @@ export async function GET(req: NextRequest) {
       }
     );
 
-    const { access_token, expires_in, refresh_token } = tokenResponse.data;
+    const { access_token, expires_in } = tokenResponse.data;
 
-    const expiresAt = new Date(Date.now() + expires_in * 1000).toISOString();
+    //const expiresAt = new Date(Date.now() + expires_in * 1000).toISOString();
 
-    // 3. Сохраняем в Sanity
-    await client.createOrReplace({
-      _id: 'linkedinAuth',
-      _type: 'linkedinAuth',
-      accessToken: access_token,
-      refreshToken: refresh_token || '',
-      expiresAt
-    });
+    // // 3. Сохраняем в Sanity
+    // await client.createOrReplace({
+    //   _id: 'linkedinAuth',
+    //   _type: 'linkedinAuth',
+    //   accessToken: access_token,
+    //   refreshToken: refresh_token || '',
+    //   expiresAt
+    // });
 
     const response = NextResponse.redirect(new URL('/', req.url));
     response.cookies.set('linkedin_token', access_token, {
