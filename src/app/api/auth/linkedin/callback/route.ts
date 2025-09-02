@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
     //   sameSite: 'lax'
     // });
     response.cookies.set('linkedin_token', access_token, {
-      httpOnly: true,      // защита от JS
+      httpOnly: true,     
       secure: true, //process.env.NODE_ENV === 'production', // true на Netlify, false на localhost
       maxAge: expires_in,
       path: '/',
