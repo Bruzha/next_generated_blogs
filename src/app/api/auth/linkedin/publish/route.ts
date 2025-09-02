@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 import imageUrlBuilder from '@sanity/image-url';
 import { client } from '@/sanity/client';
-import { cookies } from 'next/headers';
 
 const builder = imageUrlBuilder(client);
 
@@ -43,18 +42,17 @@ function extractTextAndImage(content: any[]) {
 
 
 export async function POST(req: NextRequest) {
-  // const token = req.cookies.get('linkedin_token')?.value;
-  // if (!token) {
-  //   return new NextResponse('Not authenticated', { status: 401 });
-  // }
-  const cookieStore = await cookies(); // await нужен, если возвращается Promise
-  const token = cookieStore.get('linkedin_token')?.value;
+  const token = req.cookies.get('linkedin_token')?.value;
+  if (!token) {
+    return new NextResponse('Not authenticated ' + token, { status: 401 });
+  }
+
+  const { posts } = await req.json();
 
   if (!token) {
     return new NextResponse('Not authenticated', { status: 401 });
   }
-
-  const { posts } = await req.json();
+  
   const organizationUrn = 'urn:li:organization:66890500';
 
   try {
