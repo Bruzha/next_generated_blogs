@@ -48,19 +48,12 @@ export async function GET(req: NextRequest) {
     // });
 
     const response = NextResponse.redirect(new URL('/', req.url));
-    // response.cookies.set('linkedin_token', access_token, {
-    //   httpOnly: true,
-    //   secure: true,
-    //   maxAge: expires_in,
-    //   path: '/',
-    //   sameSite: 'lax'
-    // });
     response.cookies.set('linkedin_token', access_token, {
-      httpOnly: true,     
-      secure: true, //process.env.NODE_ENV === 'production', // true на Netlify, false на localhost
+      httpOnly: true,
+      secure: true,
       maxAge: expires_in,
       path: '/',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' на Netlify, 'lax' локально
+      sameSite: 'lax'
     });
 
     return response;
