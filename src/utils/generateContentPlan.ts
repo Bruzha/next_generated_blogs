@@ -85,7 +85,7 @@ export async function generateContentPlan(
           .toLowerCase()
           .replace(/[^a-z0-9]+/g, '-')
           .replace(/^-+|-+$/g, '');
-        const timestamp = new Date().toISOString().replace(/[^a-z0-9]+/gi, '-');
+        //const timestamp = new Date().toISOString().replace(/[^a-z0-9]+/gi, '-');
 
         const cover = images.length > 0 ? { image: images[0].image, altText: images[0].altText } : undefined;
 
@@ -113,15 +113,27 @@ export async function generateContentPlan(
           },
         ];
 
+        const seoObj = {
+          _key: nanoid(),
+          _type: 'seo',
+          titleTemplate: false,
+          title: contentPlan.title,
+          description: contentPlan.description,
+          keywords: contentPlan.keywords,
+          ogType: 'article',
+          twitterCard: 'summary_large_image',
+          ...(cover ? { image: cover } : {}),
+        };
+
         const article = {
           _type: 'articlesItem',
-          _id: timestamp,
+          _id: nanoid(),
           title: contentPlan.title,
           desc: contentPlan.description,
           slug: { _type: 'slug', current: `/${slugBase}` },
           date,
           ...(cover ? { coverImage: cover } : {}),
-          seo: {},
+          seo: seoObj,
           content: modifiedBodyContent,
           category: categoriesForPrompt[i],
           status: "Unpublished",

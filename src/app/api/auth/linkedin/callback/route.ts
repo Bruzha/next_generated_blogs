@@ -1,7 +1,7 @@
 // src/app/api/auth/linkedin/callback/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
-import { client } from '@/sanity/client';
+//import { client } from '@/sanity/client';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
