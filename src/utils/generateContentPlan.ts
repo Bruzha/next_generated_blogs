@@ -39,7 +39,6 @@ export async function generateContentPlan(
     return catsForDate.join(', ');
   });
 
-  console.log("categoriesForPrompt: ", categoriesForPrompt);
   const combinedPromptContentPlan = getContentPlanPrompt(categoriesForPrompt, articleDates);
 
   const combinedContentPlan = await fetchContentPlan(combinedPromptContentPlan);
@@ -85,7 +84,6 @@ export async function generateContentPlan(
           .toLowerCase()
           .replace(/[^a-z0-9]+/g, '-')
           .replace(/^-+|-+$/g, '');
-        //const timestamp = new Date().toISOString().replace(/[^a-z0-9]+/gi, '-');
 
         const cover = images.length > 0 ? { image: images[0].image, altText: images[0].altText } : undefined;
 
@@ -141,7 +139,6 @@ export async function generateContentPlan(
         };
 
         const created = await client.create(article);
-        console.log("created: ", created);
 
         const postToStore: PostType = {
           _id: created._id,

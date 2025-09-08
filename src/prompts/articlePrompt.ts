@@ -8,6 +8,8 @@ Write an engaging, SEO-friendly article in **Sanity Portable Text format** (JSON
 - **Category**: ${topic}
 - **Keywords**: ${keywords}
 
+Provide specific, informative and useful information, include clear analytics and insights: explain what the numbers mean for brands, show trends for the next 2–3 years, and provide data such as statistics, percentages, and comparisons (e.g., Shopify vs WooCommerce, current vs past years). If real data is unavailable, use realistic estimates and mark them as such.
+
 ### Article structure:
 
 1. **Introduction**
@@ -18,6 +20,7 @@ Write an engaging, SEO-friendly article in **Sanity Portable Text format** (JSON
 2. **Main content**
    - Use **H2** and **H3** headings for structure (styles: "h2", "h3")
    - Add lists (bullet or numbered), quotes, and helpful content
+   - Include at least **2 specific metrics or statistics** (e.g. market share, growth rate, number of stores in 2019 and 2025, percentage improvement, etc.)
    - Include **1 image block** with fields:
 \`\`\`json
 {

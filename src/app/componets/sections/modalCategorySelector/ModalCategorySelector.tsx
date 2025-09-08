@@ -48,7 +48,6 @@ export default function ModalCategorySelector({ dates, onConfirm, onClose }: Mod
       return;
     }
 
-    console.log('selectedCategories: ', selectedCategories);
     onConfirm(selectedCategories);
     onClose();
   };
