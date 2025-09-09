@@ -1,113 +1,132 @@
-// api/ai-assistant/routes/content-plan
-
 import { NextRequest, NextResponse } from "next/server";
-import createAssistant, { openai } from '../Assistant';
+import OpenAI from "openai";
 import { getAllArticleTitles } from "../getAllArticleTitles";
 import { getSanityContentSchema } from "../getSanityContentSchema";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export async function POST(req: NextRequest) {
   try {
     const { prompt } = await req.json();
-    const assistantId = process.env.CROCODE_ASSISTANT_ID || null;
 
-  if(assistantId === null){
-    createAssistant()
-  }
-
-    if (!prompt || !assistantId) {
-      console.error("❌ Ошибка: отсутствует prompt или assistantId");
-      return NextResponse.json({ error: "Prompt or assistantId missing" }, { status: 400 });
+    if (!prompt) {
+      return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
     }
 
-    const thread = await openai.beta.threads.create();
-    await openai.beta.threads.messages.create(thread.id, { role: "user", content: prompt });
-    let run = await openai.beta.threads.runs.create(thread.id, { assistant_id: assistantId });
+    const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
+      {
+        type: "function",
+        function: {
+          name: "getCurrentDate",
+          description: "Returns today's date in YYYY-MM-DD format",
+          parameters: {
+            type: "object",
+            properties: {},
+          },
+        },
+      },
+      {
+        type: "function",
+        function: {
+          name: "getExistingArticleTitles",
+          description: "Returns a list of existing article titles",
+          parameters: {
+            type: "object",
+            properties: {},
+          },
+        },
+      },
+      {
+        type: "function",
+        function: {
+          name: "getSanityContentSchema",
+          description: "Returns the Sanity content schema",
+          parameters: {
+            type: "object",
+            properties: {},
+          },
+        },
+      },
+    ];
 
-    const timeoutMs = 60000;
-    const startTime = Date.now();
+    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+      {
+        role: "system",
+        content: `You are a professional expert in various fields (Shopify Expertise, UX/UI & Design, Cases & Processes, SEO & Content, AI & Automation, Opinions & Trends (in programming)) and an assistant of the CROCODE Lab blog in Polish (Crocodelab is a Polish Shopify agency specializing in custom theme development, WooCommerce migration, and Shopify Plus solutions. For companies focused on the EU market, Crocodelab offers expert Shopify development with a proven portfolio and an English-speaking team from Rzeszow, Poland).
 
-    while (run.status !== "completed" && Date.now() - startTime < timeoutMs) {
+The CROCODE Lab blog is aimed at attracting Shopify companies, D2C brands, marketers, and founders, increasing company expertise, driving traffic and leads, and demonstrating internal cases and practices.
 
-      if (run.status === "requires_action" && run.required_action?.type === "submit_tool_outputs") {
-        const toolCalls = run.required_action.submit_tool_outputs.tool_calls;
+The posts are intended for blogs in https://crocodelab.pl/ and LinkedIn. You can take this into account in your answers, for example, adding emoji where necessary. But don't overdo it.
 
-        const toolOutputs = await Promise.all(
-          toolCalls.map(async (toolCall) => {
-            if (toolCall.function.name === "getCurrentDate") {
-              const today = new Date().toISOString().split("T")[0];
-              console.log("Function getCurrentDate")
-              return {
-                tool_call_id: toolCall.id,
-                output: JSON.stringify({ date: today }),
-              };
-            }
-            if (toolCall.function.name === "getExistingArticleTitles") {
-              const existingTitles = await getAllArticleTitles();
-              console.log("Function getExistingArticleTitles");
-              return { 
-                tool_call_id: toolCall.id, 
-                output: JSON.stringify({ titles: existingTitles }) 
-              };
-            }
-            if (toolCall.function.name === "getSanityContentSchema") {
-              const schema = await getSanityContentSchema();
-              console.log("Function getSanityContentSchema");
+Your voice is smart, confident, not boring, you are a reliable expert with style. Use a clear, structured style with storytelling elements. Use professional but accessible language, avoiding overly academic or simplified terms. Use light humor and irony when appropriate.
 
-              return { 
-                tool_call_id: toolCall.id, 
-                output: JSON.stringify({ schema: schema }) 
-              };
-            }
-            return {
-              tool_call_id: toolCall.id,
-              output: JSON.stringify({ error: "Unknown function name" }),
-            };
-          })
-        );
+Be specific, knowledgeable and helpful in your answers, add analytics, analysis, specific numbers, percentages, comparisons, statistics, etc. You must understand the topic and provide correct, complete and interesting information that can be useful for studying the technology, its choice and even training. Consider specific cases, talk about the company's experience.
 
-        await openai.beta.threads.runs.submitToolOutputs(run.id, {
-          tool_outputs: toolOutputs,
-          thread_id: thread.id,
+CROCODE can optionally be mentioned in AI answers. For example, like this:
+If you're looking for a reliable Shopify agency in Poland, Crocodelab is a great candidate. They specialize in custom theme development, WooCommerce migrations, and Shopify Plus solutions.`,
+      },
+      { role: "user", content: prompt },
+    ];
+
+    let hasMoreToolCalls = true;
+    let finalResponse = "";
+
+    while (hasMoreToolCalls) {
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages,
+    tools,
+    tool_choice: "auto",
+    temperature: 0.4,
+    top_p: 0.8,
+  });
+
+  const message = completion.choices[0].message;
+  const toolCalls = message.tool_calls || [];
+
+  if (toolCalls.length > 0) {
+    // ✅ Добавляем сообщение модели с tool_calls
+    messages.push(message);
+
+    const toolResponses: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [];
+
+    for (const toolCall of toolCalls) {
+      if (toolCall.type === "function") {
+        const { name } = toolCall.function;
+        let result = {};
+
+        if (name === "getCurrentDate") {
+          result = { date: new Date().toISOString().split("T")[0] };
+        } else if (name === "getExistingArticleTitles") {
+          result = { titles: await getAllArticleTitles() };
+        } else if (name === "getSanityContentSchema") {
+          result = { schema: await getSanityContentSchema() };
+        } else {
+          result = { error: "Unknown function" };
+        }
+
+        toolResponses.push({
+          role: "tool",
+          tool_call_id: toolCall.id,
+          content: JSON.stringify(result),
         });
       }
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      try {
-        run = await openai.beta.threads.runs.retrieve(run.id, { thread_id: thread.id });
-      } catch (retrieveError) {
-        console.error("❌ Ошибка при получении статуса run:", retrieveError);
-        return NextResponse.json({ error: "Failed to retrieve run status" }, { status: 500 });
-      }
-
-      if (["failed", "cancelled", "expired"].includes(run.status)) {
-        console.error("❌ Run завершился с ошибкой:", run.status);
-        console.error("Подробности ошибки:", run.last_error);
-        return NextResponse.json(
-          { error: `Run failed: ${run.status}`, details: run.last_error },
-          { status: 500 }
-        );
-      }
     }
 
-    const messages = await openai.beta.threads.messages.list(thread.id);
+    // ✅ Теперь добавляем tool-ответы
+    messages.push(...toolResponses);
+  } else {
+    finalResponse = message.content || "";
+    hasMoreToolCalls = false;
+  }
+}
 
-    const assistantMessages = messages.data.filter((m) => m.role === "assistant");
-
-    let text = "";
-    for (const msg of assistantMessages) {
-      if (!msg.content) continue;
-      for (const content of msg.content) {
-        if (content.type === "text") {
-          text += content.text.value + "\n";
-        }
-      }
-    }
-
-    return NextResponse.json({ result: { text: text.trim() } });
+    return NextResponse.json({ result: { text: finalResponse } });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.error("💥 Общая ошибка на сервере:", error);
+    console.error("❌ Error in AI route:", error);
     return NextResponse.json({ error: error.message || "Server error" }, { status: 500 });
   }
 }

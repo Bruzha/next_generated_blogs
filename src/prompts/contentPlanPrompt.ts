@@ -18,7 +18,7 @@ Output format:
     "title": "Your unique title here",
     "description": "Your unique description here",
     "keywords": "keyword1, keyword2, ..., keyword10"
-  },
+  }, 
   ...
 ]
 \`\`\`

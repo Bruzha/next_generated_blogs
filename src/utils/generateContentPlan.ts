@@ -125,7 +125,7 @@ export async function generateContentPlan(
 
         const article = {
           _type: 'articlesItem',
-          _id: nanoid(),
+          _id: `article-${nanoid()}`,
           title: contentPlan.title,
           desc: contentPlan.description,
           slug: { _type: 'slug', current: `/${slugBase}` },

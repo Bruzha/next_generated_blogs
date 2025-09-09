@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 import imageUrlBuilder from '@sanity/image-url';
 import { client } from '@/sanity/client';
+import OpenAI from "openai";
 
 const builder = imageUrlBuilder(client);
 
@@ -38,38 +39,35 @@ function extractTextAndImage(content: any[]) {
   };
 }
 
-// Функция для перевода текста через OpenAI
-async function translateToEnglish(text: string) {
-  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-  if (!OPENAI_API_KEY) throw new Error('OpenAI API key not set');
+async function translateToEnglish(text: string, maxLength = 3000) {
+  if (!process.env.OPENAI_API_KEY) throw new Error('OpenAI API key not set');
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${OPENAI_API_KEY}`
-    },
-    body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: `You are a translator that translates Polish text to English while preserving formatting, lists, and line breaks. 
-          This text is used for a LinkedIn blog post, so you can add emojis if needed (For example, emoji in headings and subheadings. You don't need to add them to every paragraph of text. Don't use more than one emoji in one place.) and edit the content without changing its meaning, so that it better fits the LinkedIn publication standards and style.`
-        },
-        {
-          role: 'user',
-          content: text
-        }
-      ],
-      temperature: 0
-    })
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const response = await openai.responses.create({
+    model: 'gpt-4o-mini',
+    input: [
+      {
+        role: 'system',
+        content: `You are a translator that translates Polish text to English while preserving formatting, lists, and line breaks.
+        This text is for a LinkedIn post. Requirements:
+        - MAX ${maxLength} characters (hard limit).
+        - If original text is longer, summarize while keeping the main points and a natural LinkedIn style.
+        - Add emojis only in headings/subheadings (max 1 per heading).
+        - Do NOT add emojis to every sentence.
+        - Do NOT break JSON or formatting.
+        - The final text is entirely in English.`
+      },
+      {
+        role: 'user',
+        content: text
+      }
+    ],
+    temperature: 0
   });
 
-  const data = await response.json();
-  const translated = data.choices?.[0]?.message?.content;
-  return translated || text;
+  return response.output_text || text;
 }
+
 
 export async function POST(req: NextRequest) {
   const token = req.cookies.get('linkedin_token')?.value;
@@ -82,16 +80,17 @@ export async function POST(req: NextRequest) {
     for (const post of posts) {
       const { text, imageUrl } = extractTextAndImage(post.content);
 
-      // --- Добавляем перевод ---
-      const translatedText = await translateToEnglish(text);
-      const translatedTitle = await translateToEnglish(post.title);
-      const translatedDesc = await translateToEnglish(post.desc);
+      let translatedText = await translateToEnglish(text);
+      translatedText = translatedText.replace(/\*\*/g, '');
+      let translatedTitle = await translateToEnglish(post.title, 200);
+      translatedTitle = translatedTitle.replace(/\*\*/g, '');
+      let translatedDesc = await translateToEnglish(post.desc, 500);
+      translatedDesc = translatedDesc.replace(/\*\*/g, '');
 
       const media = [];
       let shareMediaCategory = 'NONE';
 
       if (imageUrl) {
-        // регистрация и загрузка изображения (как у тебя было)
         const registerResponse = await axios.post(
           'https://api.linkedin.com/v2/assets?action=registerUpload',
           {
@@ -123,7 +122,6 @@ export async function POST(req: NextRequest) {
         shareMediaCategory = 'IMAGE';
       }
 
-      // публикация с переведённым текстом
       const payload = {
         author: organizationUrn,
         lifecycleState: 'PUBLISHED',
