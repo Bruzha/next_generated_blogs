@@ -13,8 +13,11 @@ export async function generateImageWithFlux(
 ): Promise<string | null> {
   try {
     if (!imageBase64s || imageBase64s.length === 0) {
+      console.log("Prompt2: ", prompt);
       throw new Error("No reference images provided");
     }
+
+    console.log("Prompt: ", prompt);
 
     const imageUrls: string[] = await Promise.all(
       imageBase64s.map(async (base64) => {
@@ -22,8 +25,6 @@ export async function generateImageWithFlux(
         return await resized;
       })
     );
-
-    console.log("Prompt: ", prompt);
 
     const result = await fal.subscribe("fal-ai/flux-pro/kontext/max/multi", {
       input: {

@@ -26,7 +26,7 @@ Provide specific, informative and useful information, include clear analytics an
 {
   "_type": "image",
   "_key": "unique",
-  "alt": "Descriptive SEO friendly alt text",
+  "alt": "Descriptive alt text",
   "dataImageDescription": "[IMAGE: detailed description about ${topic} and ${title}]"
 }
 \`\`\`
@@ -120,4 +120,5 @@ Image:
 - Ensure valid JSON, no trailing commas
 - All children must have \`_key\`
 - If the dataImageDescription mentions a laptop or other piece of equipment, it is important to describe in detail their position, quantity, and how exactly they are turned in relation to the viewer. Any text that appears on the image is formatted in English and enclosed in quotation marks.
+- The alt of the image must be SEO optimized and contain keywords.
 `;

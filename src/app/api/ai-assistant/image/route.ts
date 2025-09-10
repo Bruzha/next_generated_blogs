@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
 
     const { prompt, styleImageBase64 } = getImage(description);
     const imageBase64 = await generateImageWithFlux(prompt, styleImageBase64);
+    console.log('route: ', imageBase64)
 
     if (!imageBase64) {
       return NextResponse.json({ error: "Image generation failed" }, { status: 500 });

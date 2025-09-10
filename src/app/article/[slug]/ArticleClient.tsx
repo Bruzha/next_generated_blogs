@@ -48,6 +48,7 @@ export default function ArticleClient({ slug }: Props) {
     return null;
   }
 
+  console.log("post.content: ", post.content)
   return (
     <div className="article">
       <Link href="/" className="article__backLink">
