@@ -271,21 +271,21 @@ export async function generateContentPlan(
 
         const breadcrumbs = [
           {
-            _key: nanoid(),
+            _key: `key-${nanoid()}`,
             linkInternal: {
               label: "Home",
               reference: homeDoc ? { _type: 'reference', _ref: homeDoc._id } : null,
             },
           },
           {
-            _key: nanoid(),
+            _key: `key-${nanoid()}`,
             linkInternal: {
               label: "Blog",
               reference: blogDoc ? { _type: 'reference', _ref: blogDoc._id } : null,
             },
           },
           {
-            _key: nanoid(),
+            _key: `key-${nanoid()}`,
             linkInternal: {
               label: contentPlan.title,
               reference: null,
@@ -294,7 +294,7 @@ export async function generateContentPlan(
         ];
 
         const seoObj = {
-          _key: nanoid(),
+          _key: `key-${nanoid()}`,
           _type: 'seo',
           titleTemplate: false,
           title: contentPlan.title,

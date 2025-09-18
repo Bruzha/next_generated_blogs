@@ -32,7 +32,5 @@ export function getImage(imageDescription: string): {
 
   Negative prompt: ${NEGATIVE_PROMPT}
 `.trim();
-
-console.log('getImage: ', prompt)
   return { prompt, styleImageBase64: [base64, base64Card] };
 }

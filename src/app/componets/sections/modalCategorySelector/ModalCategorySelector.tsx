@@ -12,10 +12,12 @@ interface ModalCategorySelectorProps {
 }
 
 const listCategory = [
-  { title: 'Latest', value: 'Latest' },
-  { title: 'Technologies', value: 'Technologies' },
-  { title: 'UI/UX', value: 'UI/UX' },
-  { title: 'Client guides', value: 'Client guides' },
+  { title: 'Shopify Expertise', value: 'Shopify Expertise' },
+  { title: 'UX/UI & Design', value: 'UX/UI & Design' },
+  { title: 'Cases & Processes', value: 'Cases & Processes' },
+  { title: 'SEO & Content', value: 'SEO & Content' },
+  { title: 'AI & Automation', value: 'AI & Automation' },
+  { title: 'Opinions & Trends', value: 'Opinions & Trends' },
 ];
 
 export default function ModalCategorySelector({ dates, onConfirm, onClose }: ModalCategorySelectorProps) {

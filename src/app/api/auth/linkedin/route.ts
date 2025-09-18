@@ -14,6 +14,5 @@ export async function GET() {
     state,
   });
   const url = `https://www.linkedin.com/oauth/v2/authorization?${params.toString()}`;
-  console.log("url: ", url);
   return NextResponse.redirect(url);
 }

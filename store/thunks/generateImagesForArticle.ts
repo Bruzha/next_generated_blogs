@@ -153,7 +153,6 @@ export default async function generateImagesForArticle(
   }[];
 }> {
   let blocks: PTBlock[];
-  console.log("bodyContent: ", bodyContent)
 
   if (Array.isArray(bodyContent)) {
     blocks = bodyContent as PTBlock[];
@@ -173,8 +172,6 @@ export default async function generateImagesForArticle(
     altText: string;
     image: { _type: 'image'; asset: { _type: 'reference'; _ref: string } };
   }[] = [];
-
-  console.log("images: ", images)
 
   const updatedBlocks: PTBlock[] = [];
 
@@ -212,17 +209,12 @@ export default async function generateImagesForArticle(
           ? block.alt
           : imageDescription;
 
-          console.log("bodyContent2: ", bodyContent)
-          console.log("imageDescription1: ", imageDescription)
       try {
-        console.log("imageDescription: ", imageDescription)
         const imageResponse = await fetch('/api/ai-assistant/image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ prompt: imageDescription }),
         });
-
-        console.log("imageResponse: ", imageResponse)
 
         if (!imageResponse.ok) {
           console.error(`❌ Failed to generate image for "${imageDescription}"`);
@@ -277,13 +269,11 @@ export default async function generateImagesForArticle(
         updatedBlocks.push(block);
       }
     } else {
-      console.log("NO")
       updatedBlocks.push(block);
     }
   }
 
-  console.log("updatedBlocks: ", updatedBlocks)
-  console.log("images: ", images)
+  console.log("3) data: ", images)
   return {
     modifiedBodyContent: updatedBlocks,
     images,
