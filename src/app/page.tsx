@@ -56,17 +56,47 @@ export default function IndexPage() {
     }
   };
 
+  // const handleDeletePosts = async () => {
+  //   if (selectedForDeletion.length === 0) return;
+
+  //   if (!confirm(`Are you sure you want to delete ${selectedForDeletion.length} post(s)?`)) return;
+
+  //   setLoadingStage('deleting');
+  //   setLoading(true);
+
+  //   try {
+  //     await Promise.all(selectedForDeletion.map(id => client.delete(id)));
+  //     dispatch(setPosts(posts.filter(post => !selectedForDeletion.includes(post._id))));
+  //     setSelectedForDeletion([]);
+  //   } catch (error) {
+  //     console.error('❌ Error deleting posts:', error);
+  //     alert('Failed to delete some posts');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleDeletePosts = async () => {
     if (selectedForDeletion.length === 0) return;
 
-    if (!confirm(`Are you sure you want to delete ${selectedForDeletion.length} post(s)?`)) return;
+    if (!confirm(`Are you sure you want to delete ${selectedForDeletion.length} post(s) including drafts?`)) return;
 
     setLoadingStage('deleting');
     setLoading(true);
 
     try {
-      await Promise.all(selectedForDeletion.map(id => client.delete(id)));
-      dispatch(setPosts(posts.filter(post => !selectedForDeletion.includes(post._id))));
+      // Удаляем все версии выбранных постов (черновики и опубликованные)
+      await Promise.all(
+        selectedForDeletion.map(id =>
+          client.delete({ query: `*[_id in [$id, "drafts." + $id]]`, params: { id } })
+        )
+      );
+
+      // Обновляем store, убираем удалённые посты
+      const remainingPosts = posts.filter(post => !selectedForDeletion.includes(post._id));
+      dispatch(setPosts(remainingPosts));
+
+      alert(`Successfully deleted ${selectedForDeletion.length} post(s) including drafts.`);
       setSelectedForDeletion([]);
     } catch (error) {
       console.error('❌ Error deleting posts:', error);
