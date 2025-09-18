@@ -46,6 +46,7 @@ You are a blog content planner for CROCODE Lab. You are given a list of categori
 ${formattedKeywords}
 
 Your task is to generate unique titles and descriptions for each article depending on its category and keywords in Polish. You should:
+- DO NOT generate keywords, use only those passed in as input.
 - Select keywords (1 main and 4-5 additional) from the provided set that are suitable for each article and its category.
 - Prefer keywords with higher weight, especially as the main keyword in the title.
 - Make sure that articles do not have completely identical sets of keywords.

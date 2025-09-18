@@ -7,8 +7,8 @@ import { client } from '@/sanity/client';
 import "./style.scss";
 import LoadingIndicator, { LoadingStage } from './componets/ui/loadingIndicator/LoadingIndicator';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../store';
-import { setPosts, updatePostStatus } from '../../store/reducers/postsSlice';
+import { AppDispatch, RootState } from '../store';
+import { setPosts, updatePostStatus } from '../store/reducers/postsSlice';
 
 export default function IndexPage() {
   const [loading, setLoading] = useState(false);

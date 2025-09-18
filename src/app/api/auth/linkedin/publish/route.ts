@@ -1,3 +1,4 @@
+//src/app/api/auth/linkedin/publish/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 import imageUrlBuilder from '@sanity/image-url';
@@ -52,7 +53,8 @@ async function translateToEnglish(text: string, maxLength = 3000) {
         This text is for a LinkedIn post. Requirements:
         - MAX ${maxLength} characters (hard limit).
         - If original text is longer, summarize while keeping the main points and a natural LinkedIn style.
-        - Add emojis only in headings/subheadings (max 1 per heading).
+        - Style the article to match LinkedIn's blog posts. For example: a professional, expert tone, with business value; less code and technical details, more benefit for business owners, marketers, and designers; personal experience is mentioned. But DO NOT change the meaning and benefit of the original article, DO NOT lose the content, just slightly adjust the style of presentation of the material.
+        - Add a maximum of 1-3 relevant emojis to your text, scattering them throughout. Don't overdo it. Don't place emojis too close together.
         - Do NOT add emojis to every sentence.
         - Do NOT break JSON or formatting.
         - The final text is entirely in English.`

@@ -6,8 +6,8 @@ import "./style.scss";
 import { PortableTextBlock } from '@portabletext/types';
 import { client } from '@/sanity/client';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../../../store';
-import { updatePostStatus } from '../../../../../store/reducers/postsSlice';
+import { AppDispatch } from '../../../../store';
+import { updatePostStatus } from '../../../../store/reducers/postsSlice';
 
 export interface PostType {
   _id: string;
