@@ -79,30 +79,41 @@ export default function IndexPage() {
   const handleDeletePosts = async () => {
     if (selectedForDeletion.length === 0) return;
 
-    if (!confirm(`Are you sure you want to delete ${selectedForDeletion.length} post(s) including drafts?`)) return;
+    if (!confirm(`Are you sure you want to delete ${selectedForDeletion.length} post(s)?`)) return;
 
     setLoadingStage('deleting');
     setLoading(true);
 
     try {
-      // Удаляем все версии выбранных постов (черновики и опубликованные)
       await Promise.all(
-        selectedForDeletion.map(id =>
-          client.delete({ query: `*[_id in [$id, "drafts." + $id]]`, params: { id } })
-        )
+        selectedForDeletion.map(async (id) => {
+          // 1️⃣ Найти все документы, которые ссылаются на этот пост
+          const referencingDocs = await client.fetch(
+            '*[_type == "articlesItem" && references($id)]{_id}',
+            { id }
+          );
+
+          // 2️⃣ Отвязать ссылки
+          await Promise.all(
+            referencingDocs.map((doc: { _id: string }) =>
+              client.patch(doc._id).unset(['breadcrumbs[].linkInternal.reference']).commit()
+            )
+          );
+
+          // 3️⃣ Удаляем сам документ и его черновик
+          await client.delete({ query: '*[_id in [$id, "drafts." + $id]]', params: { id } });
+        })
       );
 
-      // Обновляем store, убираем удалённые посты
-      const remainingPosts = posts.filter(post => !selectedForDeletion.includes(post._id));
-      dispatch(setPosts(remainingPosts));
-
-      alert(`Successfully deleted ${selectedForDeletion.length} post(s) including drafts.`);
+      // 4️⃣ Обновляем store
+      dispatch(setPosts(posts.filter((post) => !selectedForDeletion.includes(post._id))));
       setSelectedForDeletion([]);
     } catch (error) {
       console.error('❌ Error deleting posts:', error);
       alert('Failed to delete some posts');
     } finally {
       setLoading(false);
+      setLoadingStage('initial');
     }
   };
 
