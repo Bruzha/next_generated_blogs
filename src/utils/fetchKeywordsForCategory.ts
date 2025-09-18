@@ -183,8 +183,6 @@ export type Keyword = {
 export default async function fetchKeywordsDataForSEO(query: string): Promise<Keyword[]> {
   const key = process.env.DATAFORSEO_API_KEY;
   const secret = process.env.DATAFORSEO_API_SECRET;
-  console.log('DATAFORSEO_API_KEY:', process.env.DATAFORSEO_API_KEY);
-  console.log('DATAFORSEO_API_SECRET:', process.env.DATAFORSEO_API_SECRET);
   if (!key || !secret) throw new Error("DATAFORSEO_API_KEY or DATAFORSEO_API_SECRET not set");
 
   const url = 'https://api.dataforseo.com/v3/keywords_data/google_ads/keywords_for_keywords/live';
