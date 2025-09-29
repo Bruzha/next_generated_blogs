@@ -1,35 +1,4 @@
-// export const getContentPlanPrompt = (
-//   topics: string[],
-//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   articleDates: any
-// ) => `
-// You are a blog content planner for CROCODE Lab. Create unique titles for posts (not from the list of existing ones) and add a description and 10 relevant keywords in Polish, taking into account the categories for each article:
-
-// ${topics.join(', ')}
-
-// Create exactly ${articleDates.length} entries. Titles must be unique and non-repetitive. 
-
-// (If necessary, take into account the current date)
-
-// Output format:
-// \`\`\`json
-// [
-//   {
-//     "title": "Your unique title here",
-//     "description": "Your unique description here",
-//     "keywords": "keyword1, keyword2, ..., keyword10"
-//   }, 
-//   ...
-// ]
-// \`\`\`
-
-// If a unique title can't be generated, return:
-// \`\`\`json
-// { "title": "Skipped", "description": "Skipped", "keywords": "Skipped" }
-// \`\`\`
-
-// Be creative and consistent.
-// `;
+// src/prompts/contentPlanPrompt.ts
 
 export const getContentPlanPrompt = (
   topics: string[],
@@ -53,6 +22,9 @@ Your task is to generate unique titles and descriptions for each article dependi
 - Include the main keyword (most important) in the title.
 - Include the main and additional keywords (not necessarily all) in a natural way in the description.
 - Create unique, engaging titles.
+- Where possible, phrase titles or/and descriptions as answers to common AI user queries (e.g. "Jak działa Shopify Plus w Polsce? [Answer]").
+- Use questions/answers that match typical user intent for AI tools (how, why, best practices, comparisons).
+- Avoid duplicate patterns: vary between case studies, trend reports, practical guides, and FAQ-style posts.
 - Generate exactly ${articleDates.length} articles in this order: ${topics.join(', ')}.
 
 Output format:
@@ -72,6 +44,6 @@ If a unique title can't be generated, return:
 { "title": "Skipped", "description": "Skipped", "keywords": "Skipped" }
 \`\`\`
 
-Be creative and consistent.
+Be creative, fact-based, consistent, and optimized both for SEO and Generative Engine Optimization.
 `;
 };

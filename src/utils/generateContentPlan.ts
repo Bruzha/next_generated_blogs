@@ -1,3 +1,4 @@
+// src/utils/generateContentPlan.ts
 import { getTuesdaysAndFridaysForNextMonth } from "./dateUtils";
 import { getContentPlanPrompt } from "@/prompts/contentPlanPrompt";
 import fetchContentPlan from "../store/thunks/fetchContentPlan";
@@ -53,10 +54,12 @@ export async function generateContentPlan(
   console.log("baseShopifyKeywords: ", baseShopifyKeywords)
 
   const categoryQueries: Record<string, string> = {
-    Latest: "shopify trends",
-    Technologies: "shopify apps",
-    "UI/UX": "shopify ux design",
-    "Client guides": "shopify tutorial",
+    "Shopify Expertise": "shopify expertise",
+    "UX/UI & Design": "shopify ux design",
+    "Cases & Processes": "shopify case study",
+    "SEO & Content": "shopify seo content",
+    "AI & Automation": "shopify automation ai",
+    "Opinions & Trends": "shopify trends",
   };
 
   const allKeywords: { word: string; weight: number }[] = [...baseShopifyKeywords];
@@ -71,12 +74,6 @@ export async function generateContentPlan(
     const catsForDate = selectedCategories[dateKey] || [];
     return catsForDate.join(', ');
   });
-
-  // const allKeywords: { word: string; weight: number }[] =[
-  //  { word: "Shopify Polish", weight: 1},
-  //  { word: "Shopify ux design", weight: 1},
-  //  { word: "UI/UX", weight: 1}
-  // ]
 
   console.log("allKeywords: ", allKeywords)
   const combinedPromptContentPlan = getContentPlanPrompt(
@@ -102,7 +99,7 @@ export async function generateContentPlan(
   setLoadingStage('article-generation');
   const articlePromises: Promise<PostType | null>[] = [];
 
-  for (let i = 0; i < combinedContentPlan.length; i++) {
+  for (let i = 0; i < 1; i++) {
     const contentPlan = combinedContentPlan[i];
     const d = articleDates[i];
     const date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;

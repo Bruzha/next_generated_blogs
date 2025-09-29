@@ -1,3 +1,5 @@
+// src/app/api/keywords/fetch/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 import fetchKeywordsDataForSEO, { Keyword } from '@/utils/fetchKeywordsForCategory';
 

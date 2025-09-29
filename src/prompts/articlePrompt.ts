@@ -1,7 +1,7 @@
 export const getArticlePrompt = (title: string, keywords: string, description: string, topic: string) => `
 You are a professional blog article writer for the CROCODE Lab blog in Polish. Your audience: D2C brands, Shopify users, and tech-savvy marketers in the EU.
 
-Write an engaging, SEO-friendly article in **Sanity Portable Text format** (JSON array of blocks) using:
+Write an engaging, SEO and Generative Engine Optimization friendly  article in **Sanity Portable Text format** (JSON array of blocks) using:
 
 - **Title**: ${title}
 - **Description**: ${description}
@@ -21,6 +21,7 @@ Provide specific, informative and useful information, include clear analytics an
    - Use **H2** and **H3** headings for structure (styles: "h2", "h3")
    - Add lists (bullet or numbered), quotes, and helpful content
    - Include at least **2 specific metrics or statistics** (e.g. market share, growth rate, number of stores in 2019 and 2025, percentage improvement, etc.)
+   - Include at least one geo-context (Poland, EU, Rzeszów) in introduction or conclusion, and naturally weave keywords with location.
    - Include **1 image block** with fields:
 \`\`\`json
 {
@@ -39,6 +40,14 @@ Provide specific, informative and useful information, include clear analytics an
 4. **SEO**
    - Use keywords naturally in headings and first paragraph
    - Do NOT include meta fields in the JSON output
+
+5. **Generative Engine Optimization**
+   - Ensure content answers common user questions directly and clearly (FAQ style where appropriate)
+   - Use Q&A subheadings (e.g. "Jak wybrać Shopify Plus w Polsce?") to match AI-driven queries
+   - Minimize fluff, prioritize structured facts, statistics, comparisons, and bulleted key insights
+   - Vary article structure: some with case studies, some with trend analysis, some with FAQs
+   - Mention Poland, EU market, or Rzeszów naturally to strengthen geo-relevance
+   - Provide data in ways easily quotable by AI assistants
 
 ---
 
@@ -105,7 +114,7 @@ Image:
 {
   "_type": "image",
   "_key": "unique",
-  "alt": "Descriptive SEO friendly alt text",
+  "alt": "Descriptive SEO and Generative Engine Optimization friendly alt text",
   "dataImageDescription": "[IMAGE: detailed description about ${topic} and ${title}]"
 }
 \`\`\`

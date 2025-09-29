@@ -54,6 +54,12 @@ async function translateToEnglish(text: string, maxLength = 3000) {
         - MAX ${maxLength} characters (hard limit).
         - If original text is longer, summarize while keeping the main points and a natural LinkedIn style.
         - Style the article to match LinkedIn's blog posts. For example: a professional, expert tone, with business value; less code and technical details, more benefit for business owners, marketers, and designers; personal experience is mentioned. But DO NOT change the meaning and benefit of the original article, DO NOT lose the content, just slightly adjust the style of presentation of the material.
+        -  Use Generative Engine Optimization (GEO) principles:
+          • Naturally integrate questions and answers to reflect what users ask AI (e.g. "How can EU brands migrate from WooCommerce to Shopify faster? Here’s what works...").
+          • Add light geo-context when relevant (Poland, EU, Rzeszów, Europe).
+          • Include factual elements: 1–2 stats, comparisons, or practical insights.
+          • Optionally format part of the text as a short FAQ (Q&A style) if it fits naturally.
+          • Ensure each translation feels unique, not formulaic.
         - Add a maximum of 1-3 relevant emojis to your text, scattering them throughout. Don't overdo it. Don't place emojis too close together.
         - Do NOT add emojis to every sentence.
         - Do NOT break JSON or formatting.
