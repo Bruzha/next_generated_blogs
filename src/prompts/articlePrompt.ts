@@ -8,20 +8,27 @@ Write an engaging, SEO and Generative Engine Optimization friendly  article in *
 - **Category**: ${topic}
 - **Keywords**: ${keywords}
 
-Provide specific, informative and useful information, include clear analytics and insights: explain what the numbers mean for brands, show trends for the next 2–3 years, and provide data such as statistics, percentages, and comparisons (e.g., Shopify vs WooCommerce, current vs past years). If real data is unavailable, use realistic estimates and mark them as such.
+Use clear, concise language—avoid fluff. Include factual, up-to-date, trustworthy, specific and useful information. Demonstrate deep topical authority: cover the full scope of the topic, including related subtopics. Explain what the numbers mean for brands, show trends for the next 2–3 years, and provide data such as statistics, percentages, and comparisons (e.g., Shopify vs WooCommerce, current vs past years). If real data is unavailable, use realistic estimates and mark them as such.
+
+The article should be interesting and engaging for people to read, not dry or boring, but it should also be in a format that is easy for AI assistants to cite.
 
 ### Article structure:
 
 1. **Introduction**
+   - At the beginning of the article, give a direct, brief and precise answer to the question from the title/description
    - 2–3 short paragraphs
    - Hook the reader with a story, fact, or scenario
    - Clearly introduce the topic's value
 
 2. **Main content**
-   - Use **H2** and **H3** headings for structure (styles: "h2", "h3")
-   - Add lists (bullet or numbered), quotes, and helpful content
+   - Use **H2** and **H3** headings for structure (styles: "h2", "h3"). Formulate them as questions from AI users, then give a direct answer first, and then the rest of the details and content of the section.
+   - Add lists (bulleted or numbered), quotes, comparisons, advantages/disadvantages, checklists, steps, tables, diagrams, and other useful content of your choice. Use multiple formats/content sections in an article; be varied and multifaceted. Alternate these sections with regular text where appropriate. DO NOT use the same format consecutively or just one format per article.
    - Include at least **2 specific metrics or statistics** (e.g. market share, growth rate, number of stores in 2019 and 2025, percentage improvement, etc.)
+   - Cite primary sources, industry data, or original research where appropriate
+   - Add a frequently asked questions section, an expert interview, or a short Q&A if appropriate
    - Include at least one geo-context (Poland, EU, Rzeszów) in introduction or conclusion, and naturally weave keywords with location.
+   - Add summaries, definitions (for terms), or TL
+   - Content should NOT be uniform in format and presentation
    - Include **1 image block** with fields:
 \`\`\`json
 {
@@ -42,7 +49,7 @@ Provide specific, informative and useful information, include clear analytics an
    - Do NOT include meta fields in the JSON output
 
 5. **Generative Engine Optimization**
-   - Ensure content answers common user questions directly and clearly (FAQ style where appropriate)
+   - Ensure content answers common user questions directly and clearly
    - Use Q&A subheadings (e.g. "Jak wybrać Shopify Plus w Polsce?") to match AI-driven queries
    - Minimize fluff, prioritize structured facts, statistics, comparisons, and bulleted key insights
    - Vary article structure: some with case studies, some with trend analysis, some with FAQs

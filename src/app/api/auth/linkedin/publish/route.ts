@@ -40,7 +40,31 @@ function extractTextAndImage(content: any[]) {
   };
 }
 
-async function translateToEnglish(text: string, maxLength = 3000) {
+function trimToMaxLength(text: string, maxLength: number) {
+  if (text.length <= maxLength) return text;
+
+  // Обрезаем на максимум
+  let truncated = text.slice(0, maxLength);
+
+  // Ищем последнее "естественное" место обреза — точку или пробел
+  const lastSentenceEnd = Math.max(
+    truncated.lastIndexOf('.'),
+    truncated.lastIndexOf('!'),
+    truncated.lastIndexOf('?')
+  );
+  const lastSpace = truncated.lastIndexOf(' ');
+
+  if (lastSentenceEnd > maxLength * 0.7) {
+    truncated = truncated.slice(0, lastSentenceEnd + 1); // до конца предложения
+  } else if (lastSpace > maxLength * 0.7) {
+    truncated = truncated.slice(0, lastSpace); // до последнего пробела
+  }
+
+  return truncated.trim() + '...';
+}
+
+
+async function translateToEnglish(text: string, maxLength = 2500) {
   if (!process.env.OPENAI_API_KEY) throw new Error('OpenAI API key not set');
 
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -63,7 +87,10 @@ async function translateToEnglish(text: string, maxLength = 3000) {
         - Add a maximum of 1-3 relevant emojis to your text, scattering them throughout. Don't overdo it. Don't place emojis too close together.
         - Do NOT add emojis to every sentence.
         - Do NOT break JSON or formatting.
-        - The final text is entirely in English.`
+        - The final text is entirely in English.
+        
+        The final text MUST NOT exceed 3000 characters. Please shorten it without losing meaning until it's under 3000 characters.
+        `
       },
       {
         role: 'user',
@@ -76,7 +103,6 @@ async function translateToEnglish(text: string, maxLength = 3000) {
   return response.output_text || text;
 }
 
-
 export async function POST(req: NextRequest) {
   const token = req.cookies.get('linkedin_token')?.value;
   if (!token) return new NextResponse('Not authenticated', { status: 401 });
@@ -88,12 +114,14 @@ export async function POST(req: NextRequest) {
     for (const post of posts) {
       const { text, imageUrl } = extractTextAndImage(post.content);
 
-      let translatedText = await translateToEnglish(text);
-      translatedText = translatedText.replace(/\*\*/g, '');
-      let translatedTitle = await translateToEnglish(post.title, 200);
-      translatedTitle = translatedTitle.replace(/\*\*/g, '');
-      let translatedDesc = await translateToEnglish(post.desc, 500);
-      translatedDesc = translatedDesc.replace(/\*\*/g, '');
+      const combinedSourceText = `${post.title}\n\n${post.desc}\n\n${text}`;
+
+      let translatedAll = await translateToEnglish(combinedSourceText, 3000);
+      translatedAll = translatedAll.replace(/\*\*/g, '');
+
+      if (translatedAll.length > 3000) {
+        translatedAll = trimToMaxLength(translatedAll, 3000);
+      }
 
       const media = [];
       let shareMediaCategory = 'NONE';
@@ -126,7 +154,11 @@ export async function POST(req: NextRequest) {
 
         await axios.put(uploadUrl, Buffer.from(imgBuffer), { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'image/jpeg' } });
 
-        media.push({ status: 'READY', description: { text: translatedDesc }, media: asset, title: { text: translatedTitle } });
+        media.push({
+          status: 'READY',
+          media: asset
+        });
+
         shareMediaCategory = 'IMAGE';
       }
 
@@ -136,7 +168,7 @@ export async function POST(req: NextRequest) {
         specificContent: {
           'com.linkedin.ugc.ShareContent': {
             shareCommentary: {
-              text: `${translatedTitle}\n\n${translatedDesc}\n\n${translatedText}`
+              text: translatedAll
             },
             shareMediaCategory,
             ...(media.length > 0 ? { media } : {})
