@@ -1,12 +1,14 @@
 import { getBase64ImageFromPublic } from "@/utils/imageToBase64";
 
-const NEGATIVE_PROMPT = "deformed face, blurry face, extra limbs, distorted hands, missing fingers, incorrect anatomy, unrealistic reflections, duplicate body parts, asymmetrical face, artifacts, glitch, watermark, text, logo, poorly drawn face, extra arms, fused fingers, low quality, incorrect screen location, deformed diagrams, blurry keyboard, deformed keyboard";
+const NEGATIVE_PROMPT = "deformed face, blurry face, extra limbs, distorted hands, missing fingers, incorrect anatomy, unrealistic reflections, duplicate body parts, asymmetrical face, artifacts, watermark, text, logo, poorly drawn face, extra arms, fused fingers, low quality, incorrect screen location, deformed diagrams, blurry keyboard, deformed keyboard";
 
 const STYLE_IMAGES = [
   "image-styles/style1.png",
   "image-styles/style3.png",
   "image-styles/style4.png",
   "image-styles/style6.png",
+  "image-styles/style7.png",
+  "image-styles/style8.png",
 ];
 
 export function getImage(imageDescription: string): {
@@ -22,11 +24,11 @@ export function getImage(imageDescription: string): {
   }
 
   const prompt = `
-  Generate a original, photorealistic photo based on the following description:
+  Generate a new, unique, original photo based on the following description:
   ${imageDescription}.
 
   Instructions:
-    - Use reference images as a style.
+    - Use reference images ONLY for styling.
     - Make sure faces, hands, proportions, laptops and keyboards are not deformed and look correct if they exist.
   Style: photorealistic without outlines.
 

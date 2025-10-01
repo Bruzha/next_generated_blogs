@@ -43,24 +43,25 @@ function extractTextAndImage(content: any[]) {
 function trimToMaxLength(text: string, maxLength: number) {
   if (text.length <= maxLength) return text;
 
-  // Обрезаем на максимум
   let truncated = text.slice(0, maxLength);
 
-  // Ищем последнее "естественное" место обреза — точку или пробел
   const lastSentenceEnd = Math.max(
     truncated.lastIndexOf('.'),
     truncated.lastIndexOf('!'),
     truncated.lastIndexOf('?')
   );
   const lastSpace = truncated.lastIndexOf(' ');
+  let newTruncated = "";
 
   if (lastSentenceEnd > maxLength * 0.7) {
     truncated = truncated.slice(0, lastSentenceEnd + 1); // до конца предложения
+    newTruncated = truncated.trim() + '..';
   } else if (lastSpace > maxLength * 0.7) {
     truncated = truncated.slice(0, lastSpace); // до последнего пробела
+    newTruncated = truncated.trim() + '...';
   }
 
-  return truncated.trim() + '...';
+  return newTruncated;
 }
 
 
@@ -85,7 +86,6 @@ async function translateToEnglish(text: string, maxLength = 2500) {
           • Optionally format part of the text as a short FAQ (Q&A style) if it fits naturally.
           • Ensure each translation feels unique, not formulaic.
         - Add a maximum of 1-3 relevant emojis to your text, scattering them throughout. Don't overdo it. Don't place emojis too close together.
-        - Do NOT add emojis to every sentence.
         - Do NOT break JSON or formatting.
         - The final text is entirely in English.
         
@@ -116,11 +116,11 @@ export async function POST(req: NextRequest) {
 
       const combinedSourceText = `${post.title}\n\n${post.desc}\n\n${text}`;
 
-      let translatedAll = await translateToEnglish(combinedSourceText, 3000);
+      let translatedAll = await translateToEnglish(combinedSourceText, 2990);
       translatedAll = translatedAll.replace(/\*\*/g, '');
 
-      if (translatedAll.length > 3000) {
-        translatedAll = trimToMaxLength(translatedAll, 3000);
+      if (translatedAll.length > 2990) {
+        translatedAll = trimToMaxLength(translatedAll, 2990);
       }
 
       const media = [];

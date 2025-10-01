@@ -16,13 +16,14 @@ The article should be interesting and engaging for people to read, not dry or bo
 
 1. **Introduction**
    - At the beginning of the article, give a direct, brief and precise answer to the question from the title/description
-   - 2–3 short paragraphs
+   - Next, 2-3 short paragraphs for introduction
    - Hook the reader with a story, fact, or scenario
    - Clearly introduce the topic's value
 
 2. **Main content**
    - Use **H2** and **H3** headings for structure (styles: "h2", "h3"). Formulate them as questions from AI users, then give a direct answer first, and then the rest of the details and content of the section.
    - Add lists (bulleted or numbered), quotes, comparisons, advantages/disadvantages, checklists, steps, tables, diagrams, and other useful content of your choice. Use multiple formats/content sections in an article; be varied and multifaceted. Alternate these sections with regular text where appropriate. DO NOT use the same format consecutively or just one format per article.
+   - The <li> element must contain only one <font>, <div>, or <p>, which in turn contains only one list item. If there are multiple, separate them into separate <li> elements. This will create a list of <li> elements, one below the other
    - Include at least **2 specific metrics or statistics** (e.g. market share, growth rate, number of stores in 2019 and 2025, percentage improvement, etc.)
    - Cite primary sources, industry data, or original research where appropriate
    - Add a frequently asked questions section, an expert interview, or a short Q&A if appropriate
