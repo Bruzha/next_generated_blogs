@@ -1,6 +1,6 @@
 import { getBase64ImageFromPublic } from "@/utils/imageToBase64";
 
-const NEGATIVE_PROMPT = "deformed face, blurry face, extra limbs, distorted hands, missing fingers, incorrect anatomy, unrealistic reflections, duplicate body parts, asymmetrical face, artifacts, watermark, text, logo, poorly drawn face, extra arms, fused fingers, low quality, incorrect screen location, deformed diagrams, blurry keyboard, deformed keyboard";
+const NEGATIVE_PROMPT = "collage, fragmented picture, deformed face, blurry face, extra limbs, distorted hands, missing fingers, incorrect anatomy, unrealistic reflections, duplicate body parts, asymmetrical face, artifacts, unreadable text, poorly drawn face, extra arms, fused fingers, incorrect screen location, deformed diagrams, blurry keyboard, deformed keyboard";
 
 const STYLE_IMAGES = [
   "image-styles/style1.png",

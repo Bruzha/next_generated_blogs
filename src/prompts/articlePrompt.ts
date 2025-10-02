@@ -30,6 +30,7 @@ The article should be interesting and engaging for people to read, not dry or bo
    - Include at least one geo-context (Poland, EU, Rzeszów) in introduction or conclusion, and naturally weave keywords with location.
    - Add summaries, definitions (for terms), or TL
    - Content should NOT be uniform in format and presentation
+   - If you mention Crocode or Crocodelab, you can leave a link to our website https://crocodelab.pl/
    - Include **1 image block** with fields:
 \`\`\`json
 {
