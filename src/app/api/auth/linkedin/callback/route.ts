@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
       secure: true,
       maxAge: expires_in,
       path: '/',
-      sameSite: 'lax'
+      sameSite: 'none',
     });
 
     return response;
