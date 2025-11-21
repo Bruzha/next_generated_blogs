@@ -1,7 +1,7 @@
 export const getArticlePrompt = (title: string, keywords: string, description: string, topic: string) => `
 You are a professional blog article writer for the CROCODE Lab blog in Polish. Your audience: D2C brands, Shopify users, and tech-savvy marketers in the EU.
 
-Write an engaging, SEO and Generative Engine Optimization friendly  article in **Sanity Portable Text format** (JSON array of blocks) using:
+Write an engaging, SEO and Generative Engine Optimization friendly article in **Sanity Portable Text format** (JSON array of blocks) using:
 
 - **Title**: ${title}
 - **Description**: ${description}
