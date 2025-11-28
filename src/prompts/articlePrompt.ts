@@ -58,6 +58,20 @@ The article should be interesting and engaging for people to read, not dry or bo
    - Mention Poland, EU market, or Rzeszów naturally to strengthen geo-relevance
    - Provide data in ways easily quotable by AI assistants
 
+6. **Text Requirements**
+   - Most importantly – 100% uniqueness. I need a 100% human-written text. I will check it using quillbot.com, copyleaks.com, zerogpt.com, grammarly.com.
+   - The texts must be easy to read and carry meaningful content on the topic.
+   - It is required to distribute keywords evenly throughout the text.
+   - Proofread all articles for double or triple spaces. They must not be present.
+   - Sentence length should not exceed 15–20 words (ideally 10–15 words, up to 20 words if necessary).
+   - Use <h2> headings 2-3 times; all others should be <h3>.
+   - The text must be divided into paragraphs, 5–7 sentences each.
+   - The writing style should be non-fiction. The tone must be businesslike, persuasive (advertising in nature), written in the first person.
+   - The text must contain two lists – a numbered list and a bulleted list.
+   - Use each of the provided "exact keywords" at least once in the text.
+   - Do not change their form, wording, or word order.
+   - If the technique is unclear, you can refer to the website https://wecanflyagency.com/
+
 ---
 
 ### **Output format (follow these rules strictly):**
