@@ -8,6 +8,7 @@ type LoadingStage =
   | 'initial-article'
   | 'content-plan'
   | 'article-generation'
+  | 'adding-volume'
   | 'status-update'
   | 'image-generation'
   | 'deleting'
@@ -26,6 +27,8 @@ const getMessage = (
       return 'Generating content plan...';
     case 'article-generation':
       return `Generating articles...`;
+    case 'adding-volume':
+      return 'Adding required text volume...';
     case 'image-generation':
       return 'Generating images...';
     case 'publishing':

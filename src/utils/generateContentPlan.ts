@@ -12,6 +12,7 @@ import { addPost } from "../store/reducers/postsSlice";
 import { PostType } from "@/app/componets/ui/postTable/PostTable";
 import { selectCategoriesForDates } from "./modalUtils";
 import { nanoid } from 'nanoid';
+import { countTextCharacters, extendArticleContent } from "./textVolumeUtils";
 
 type SanityDocId = { _id: string };
 
@@ -115,8 +116,52 @@ export async function generateContentPlan(
           categoriesForPrompt[i]
         );
 
-        const bodyContent = await fetchArticleContent(promptArticle);
+        let bodyContent = await fetchArticleContent(promptArticle);
         if (!bodyContent) return null;
+
+        // Проверка объёма текста и догенерация при необходимости
+        const TARGET_CHAR_COUNT = 3000;
+        const MAX_ATTEMPTS = 5;
+        let currentCharCount = countTextCharacters(bodyContent);
+        let attempt = 0;
+
+        console.log(`📊 Initial article volume: ${currentCharCount} characters (target: ${TARGET_CHAR_COUNT})`);
+
+        while (currentCharCount < TARGET_CHAR_COUNT && attempt < MAX_ATTEMPTS) {
+          attempt++;
+          console.log(`🔄 Attempt ${attempt}/${MAX_ATTEMPTS}: Adding more content (current: ${currentCharCount}, missing: ${TARGET_CHAR_COUNT - currentCharCount})`);
+
+          setLoadingStage('adding-volume');
+
+          const extendedContent = await extendArticleContent(
+            bodyContent,
+            contentPlan.title,
+            contentPlan.keywords,
+            contentPlan.description,
+            categoriesForPrompt[i],
+            currentCharCount,
+            TARGET_CHAR_COUNT
+          );
+
+          if (!extendedContent) {
+            console.log(`❌ Failed to extend content on attempt ${attempt}`);
+            break;
+          }
+
+          bodyContent = extendedContent;
+          currentCharCount = countTextCharacters(bodyContent);
+          console.log(`✅ After attempt ${attempt}: ${currentCharCount} characters`);
+
+          if (currentCharCount >= TARGET_CHAR_COUNT) {
+            console.log(`✅ Target volume reached: ${currentCharCount} characters`);
+            break;
+          }
+        }
+
+        if (currentCharCount < TARGET_CHAR_COUNT) {
+          console.log(`⚠️ Final volume: ${currentCharCount} characters (target was ${TARGET_CHAR_COUNT}). Proceeding with current content.`);
+        }
+
         setLoadingStage('image-generation');
 
         const { modifiedBodyContent, images } = await generateImagesForArticle(bodyContent);

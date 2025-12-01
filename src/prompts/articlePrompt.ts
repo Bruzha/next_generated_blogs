@@ -59,6 +59,7 @@ The article should be interesting and engaging for people to read, not dry or bo
    - Provide data in ways easily quotable by AI assistants
 
 6. **Text Requirements**
+   - **Text volume: The article must contain approximately 3000 characters (without spaces, excluding HTML tags). This is the pure text volume of the article content.**
    - Most importantly – 100% uniqueness. I need a 100% human-written text. I will check it using quillbot.com, copyleaks.com, zerogpt.com, grammarly.com.
    - The texts must be easy to read and carry meaningful content on the topic.
    - It is required to distribute keywords evenly throughout the text.
