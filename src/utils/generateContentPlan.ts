@@ -70,17 +70,37 @@ export async function generateContentPlan(
     allKeywords.push(...categoryKeywords);
   }
 
+  console.log("allKeywords: ", allKeywords);
+
+  // Получаем LSI слова для всех ключевых слов
+  setLoadingStage('finding-keywords');
+
+  const keywordsForLSI = allKeywords.slice(0, 10).map(k => k.word);
+  let lsiKeywords: string[] = [];
+
+  try {
+    const lsiResponse = await fetch('/api/keywords/lsi', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ keywords: keywordsForLSI }),
+    });
+    const lsiData = await lsiResponse.json();
+    lsiKeywords = lsiData.lsiKeywords || [];
+    console.log("LSI keywords: ", lsiKeywords);
+  } catch (error) {
+    console.error("Error fetching LSI keywords:", error);
+  }
+
   const categoriesForPrompt: string[] = articleDates.map(d => {
     const dateKey = d.toISOString().split('T')[0];
     const catsForDate = selectedCategories[dateKey] || [];
     return catsForDate.join(', ');
   });
-
-  console.log("allKeywords: ", allKeywords)
   const combinedPromptContentPlan = getContentPlanPrompt(
     categoriesForPrompt,
     articleDates,
-    allKeywords
+    allKeywords,
+    lsiKeywords
   );
 
   const combinedContentPlan = await fetchContentPlan(combinedPromptContentPlan);
@@ -113,7 +133,8 @@ export async function generateContentPlan(
           contentPlan.title,
           contentPlan.keywords,
           contentPlan.description,
-          categoriesForPrompt[i]
+          categoriesForPrompt[i],
+          lsiKeywords
         );
 
         let bodyContent = await fetchArticleContent(promptArticle);

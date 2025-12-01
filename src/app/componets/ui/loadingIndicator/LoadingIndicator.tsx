@@ -6,6 +6,7 @@ import './style.scss';
 type LoadingStage =
   | 'initial'
   | 'initial-article'
+  | 'finding-keywords'
   | 'content-plan'
   | 'article-generation'
   | 'adding-volume'
@@ -23,6 +24,8 @@ const getMessage = (
   stage: LoadingStage
 ) => {
   switch (stage) {
+    case 'finding-keywords':
+      return 'Finding relevant keywords...';
     case 'content-plan':
       return 'Generating content plan...';
     case 'article-generation':

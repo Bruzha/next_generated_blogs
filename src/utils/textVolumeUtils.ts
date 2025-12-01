@@ -1,9 +1,5 @@
 // src/utils/textVolumeUtils.ts
 
-/**
- * Подсчитывает количество символов в статье (без пробелов и HTML-тегов)
- * из Sanity Portable Text формата
- */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function countTextCharacters(content: any[]): number {
   if (!Array.isArray(content)) return 0;
@@ -11,11 +7,10 @@ export function countTextCharacters(content: any[]): number {
   let totalChars = 0;
 
   for (const block of content) {
-    // Обрабатываем только текстовые блоки (не изображения)
     if (block._type === 'block' && Array.isArray(block.children)) {
       for (const child of block.children) {
         if (child._type === 'span' && typeof child.text === 'string') {
-          // Удаляем все пробелы и считаем символы
+
           const textWithoutSpaces = child.text.replace(/\s/g, '');
           totalChars += textWithoutSpaces.length;
         }
@@ -26,9 +21,6 @@ export function countTextCharacters(content: any[]): number {
   return totalChars;
 }
 
-/**
- * Создаёт промпт для добивания объёма статьи
- */
 export function getExtendVolumePrompt(
   title: string,
   keywords: string,
@@ -90,9 +82,6 @@ You can use:
 - Focus on quality over quantity, but ensure you add approximately ${missingChars} characters`;
 }
 
-/**
- * Расширяет контент статьи через API
- */
 export async function extendArticleContent(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentContent: any[],
@@ -129,11 +118,9 @@ export async function extendArticleContent(
 
     let additionalContent = data.result.text.trim();
 
-    // Очищаем от markdown блоков
     if (additionalContent.startsWith("```json")) additionalContent = additionalContent.substring(7);
     if (additionalContent.endsWith("```")) additionalContent = additionalContent.slice(0, -3);
 
-    // Удаляем примечания
     const noteIndex = additionalContent.indexOf('Note:');
     if (noteIndex !== -1) additionalContent = additionalContent.substring(0, noteIndex);
 
@@ -152,7 +139,6 @@ export async function extendArticleContent(
       return null;
     }
 
-    // Объединяем существующий контент с новым
     return [...currentContent, ...parsedAdditionalContent];
   } catch (error) {
     console.error("Error in extendArticleContent:", error);

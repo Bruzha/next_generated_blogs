@@ -4,15 +4,20 @@ export const getContentPlanPrompt = (
   topics: string[],
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   articleDates: any,
-  keywordPool: { word: string; weight: number }[]
+  keywordPool: { word: string; weight: number }[],
+  lsiKeywords: string[] = []
 ) => {
   const formattedKeywords = keywordPool
     .map(k => `${k.word} (${k.weight.toFixed(2)})`)
     .join(", ");
 
+  const lsiSection = lsiKeywords.length > 0
+    ? `\n\nLSI Keywords (consider naturally including at least one in the title):\n${lsiKeywords.join(", ")}`
+    : '';
+
   return `
 You are a blog content planner for CROCODE Lab. You are given a list of categories and a pool of keywords, each with an importance weight:
-${formattedKeywords}
+${formattedKeywords}${lsiSection}
 
 Your task is to generate unique titles and descriptions for each article depending on its category and keywords in Polish. You should:
 - DO NOT generate keywords, use only those passed in as input.

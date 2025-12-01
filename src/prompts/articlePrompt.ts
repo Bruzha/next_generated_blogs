@@ -1,4 +1,9 @@
-export const getArticlePrompt = (title: string, keywords: string, description: string, topic: string) => `
+export const getArticlePrompt = (title: string, keywords: string, description: string, topic: string, lsiKeywords: string[] = []) => {
+  const lsiSection = lsiKeywords.length > 0
+    ? `\n- **LSI Keywords (use each naturally in word forms, max 1 time per word)**: ${lsiKeywords.join(", ")}`
+    : '';
+
+  return `
 You are a professional blog article writer for the CROCODE Lab blog in Polish. Your audience: D2C brands, Shopify users, and tech-savvy marketers in the EU.
 
 Write an engaging, SEO and Generative Engine Optimization friendly article in **Sanity Portable Text format** (JSON array of blocks) using:
@@ -6,7 +11,7 @@ Write an engaging, SEO and Generative Engine Optimization friendly article in **
 - **Title**: ${title}
 - **Description**: ${description}
 - **Category**: ${topic}
-- **Keywords**: ${keywords}
+- **Keywords**: ${keywords}${lsiSection}
 
 Use clear, concise language—avoid fluff. Include factual, up-to-date, trustworthy, specific and useful information. Demonstrate deep topical authority: cover the full scope of the topic, including related subtopics. Explain what the numbers mean for brands, show trends for the next 2–3 years, and provide data such as statistics, percentages, and comparisons (e.g., Shopify vs WooCommerce, current vs past years). If real data is unavailable, use realistic estimates and mark them as such.
 
@@ -155,3 +160,4 @@ Image:
 - If the dataImageDescription mentions a laptop or other piece of equipment, it is important to describe in detail their position, quantity, and how exactly they are turned in relation to the viewer. Any text that appears on the image is formatted in English and enclosed in quotation marks.
 - The alt of the image must be SEO optimized and contain keywords.
 `;
+};
