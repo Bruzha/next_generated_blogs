@@ -12,6 +12,7 @@ import { addPost } from "../store/reducers/postsSlice";
 import { PostType } from "@/app/componets/ui/postTable/PostTable";
 import { selectCategoriesForDates } from "./modalUtils";
 import { nanoid } from 'nanoid';
+import { countTextCharacters, extendArticleContent } from "./textVolumeUtils";
 
 type SanityDocId = { _id: string };
 
@@ -69,17 +70,37 @@ export async function generateContentPlan(
     allKeywords.push(...categoryKeywords);
   }
 
+  console.log("allKeywords: ", allKeywords);
+
+  // Получаем LSI слова для всех ключевых слов
+  setLoadingStage('finding-keywords');
+
+  const keywordsForLSI = allKeywords.slice(0, 10).map(k => k.word);
+  let lsiKeywords: string[] = [];
+
+  try {
+    const lsiResponse = await fetch('/api/keywords/lsi', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ keywords: keywordsForLSI }),
+    });
+    const lsiData = await lsiResponse.json();
+    lsiKeywords = lsiData.lsiKeywords || [];
+    console.log("LSI keywords: ", lsiKeywords);
+  } catch (error) {
+    console.error("Error fetching LSI keywords:", error);
+  }
+
   const categoriesForPrompt: string[] = articleDates.map(d => {
     const dateKey = d.toISOString().split('T')[0];
     const catsForDate = selectedCategories[dateKey] || [];
     return catsForDate.join(', ');
   });
-
-  console.log("allKeywords: ", allKeywords)
   const combinedPromptContentPlan = getContentPlanPrompt(
     categoriesForPrompt,
     articleDates,
-    allKeywords
+    allKeywords,
+    lsiKeywords
   );
 
   const combinedContentPlan = await fetchContentPlan(combinedPromptContentPlan);
@@ -112,11 +133,56 @@ export async function generateContentPlan(
           contentPlan.title,
           contentPlan.keywords,
           contentPlan.description,
-          categoriesForPrompt[i]
+          categoriesForPrompt[i],
+          lsiKeywords
         );
 
-        const bodyContent = await fetchArticleContent(promptArticle);
+        let bodyContent = await fetchArticleContent(promptArticle);
         if (!bodyContent) return null;
+
+        // Проверка объёма текста и догенерация при необходимости
+        const TARGET_CHAR_COUNT = 3000;
+        const MAX_ATTEMPTS = 5;
+        let currentCharCount = countTextCharacters(bodyContent);
+        let attempt = 0;
+
+        console.log(`📊 Initial article volume: ${currentCharCount} characters (target: ${TARGET_CHAR_COUNT})`);
+
+        while (currentCharCount < TARGET_CHAR_COUNT && attempt < MAX_ATTEMPTS) {
+          attempt++;
+          console.log(`🔄 Attempt ${attempt}/${MAX_ATTEMPTS}: Adding more content (current: ${currentCharCount}, missing: ${TARGET_CHAR_COUNT - currentCharCount})`);
+
+          setLoadingStage('adding-volume');
+
+          const extendedContent = await extendArticleContent(
+            bodyContent,
+            contentPlan.title,
+            contentPlan.keywords,
+            contentPlan.description,
+            categoriesForPrompt[i],
+            currentCharCount,
+            TARGET_CHAR_COUNT
+          );
+
+          if (!extendedContent) {
+            console.log(`❌ Failed to extend content on attempt ${attempt}`);
+            break;
+          }
+
+          bodyContent = extendedContent;
+          currentCharCount = countTextCharacters(bodyContent);
+          console.log(`✅ After attempt ${attempt}: ${currentCharCount} characters`);
+
+          if (currentCharCount >= TARGET_CHAR_COUNT) {
+            console.log(`✅ Target volume reached: ${currentCharCount} characters`);
+            break;
+          }
+        }
+
+        if (currentCharCount < TARGET_CHAR_COUNT) {
+          console.log(`⚠️ Final volume: ${currentCharCount} characters (target was ${TARGET_CHAR_COUNT}). Proceeding with current content.`);
+        }
+
         setLoadingStage('image-generation');
 
         const { modifiedBodyContent, images } = await generateImagesForArticle(bodyContent);

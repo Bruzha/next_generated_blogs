@@ -1,4 +1,9 @@
-export const getArticlePrompt = (title: string, keywords: string, description: string, topic: string) => `
+export const getArticlePrompt = (title: string, keywords: string, description: string, topic: string, lsiKeywords: string[] = []) => {
+  const lsiSection = lsiKeywords.length > 0
+    ? `\n- **LSI Keywords (use each naturally in word forms, max 1 time per word)**: ${lsiKeywords.join(", ")}`
+    : '';
+
+  return `
 You are a professional blog article writer for the CROCODE Lab blog in Polish. Your audience: D2C brands, Shopify users, and tech-savvy marketers in the EU.
 
 Write an engaging, SEO and Generative Engine Optimization friendly article in **Sanity Portable Text format** (JSON array of blocks) using:
@@ -6,7 +11,7 @@ Write an engaging, SEO and Generative Engine Optimization friendly article in **
 - **Title**: ${title}
 - **Description**: ${description}
 - **Category**: ${topic}
-- **Keywords**: ${keywords}
+- **Keywords**: ${keywords}${lsiSection}
 
 Use clear, concise language—avoid fluff. Include factual, up-to-date, trustworthy, specific and useful information. Demonstrate deep topical authority: cover the full scope of the topic, including related subtopics. Explain what the numbers mean for brands, show trends for the next 2–3 years, and provide data such as statistics, percentages, and comparisons (e.g., Shopify vs WooCommerce, current vs past years). If real data is unavailable, use realistic estimates and mark them as such.
 
@@ -57,6 +62,21 @@ The article should be interesting and engaging for people to read, not dry or bo
    - Vary article structure: some with case studies, some with trend analysis, some with FAQs
    - Mention Poland, EU market, or Rzeszów naturally to strengthen geo-relevance
    - Provide data in ways easily quotable by AI assistants
+
+6. **Text Requirements**
+   - **Text volume: The article must contain approximately 3000 characters (without spaces, excluding HTML tags). This is the pure text volume of the article content.**
+   - Most importantly – 100% uniqueness. I need a 100% human-written text. I will check it using quillbot.com, copyleaks.com, zerogpt.com, grammarly.com.
+   - The texts must be easy to read and carry meaningful content on the topic.
+   - It is required to distribute keywords evenly throughout the text.
+   - Proofread all articles for double or triple spaces. They must not be present.
+   - Sentence length should not exceed 15–20 words (ideally 10–15 words, up to 20 words if necessary).
+   - Use <h2> headings 2-3 times; all others should be <h3>.
+   - The text must be divided into paragraphs, 5–7 sentences each.
+   - The writing style should be non-fiction. The tone must be businesslike, persuasive (advertising in nature), written in the first person.
+   - The text must contain two lists – a numbered list and a bulleted list.
+   - Use each of the provided "exact keywords" at least once in the text.
+   - Do not change their form, wording, or word order.
+   - If the technique is unclear, you can refer to the website https://wecanflyagency.com/
 
 ---
 
@@ -140,3 +160,4 @@ Image:
 - If the dataImageDescription mentions a laptop or other piece of equipment, it is important to describe in detail their position, quantity, and how exactly they are turned in relation to the viewer. Any text that appears on the image is formatted in English and enclosed in quotation marks.
 - The alt of the image must be SEO optimized and contain keywords.
 `;
+};
