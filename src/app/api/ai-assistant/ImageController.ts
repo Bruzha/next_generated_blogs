@@ -2,7 +2,6 @@ import { fal } from "@fal-ai/client";
 import { fetch } from "undici";
 import sharp from "sharp";
 
-// Подключение API-ключа
 fal.config({
   credentials: process.env.FAL_KEY as string,
 });

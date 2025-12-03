@@ -72,7 +72,6 @@ export async function generateContentPlan(
 
   console.log("allKeywords: ", allKeywords);
 
-  // Получаем LSI слова для всех ключевых слов
   setLoadingStage('finding-keywords');
 
   const keywordsForLSI = allKeywords.slice(0, 10).map(k => k.word);
@@ -140,7 +139,6 @@ export async function generateContentPlan(
         let bodyContent = await fetchArticleContent(promptArticle);
         if (!bodyContent) return null;
 
-        // Проверка объёма текста и догенерация при необходимости
         const TARGET_CHAR_COUNT = 3000;
         const MAX_ATTEMPTS = 5;
         let currentCharCount = countTextCharacters(bodyContent);

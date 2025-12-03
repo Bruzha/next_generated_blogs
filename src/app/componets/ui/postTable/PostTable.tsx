@@ -48,14 +48,12 @@ export default function PostTable({
     if (selectablePosts.length === 0) return;
 
     try {
-      // ✅ Транзакция (1 запрос вместо N)
       const transaction = client.transaction();
       selectablePosts.forEach(post => {
         transaction.patch(post._id, { set: { status: newStatus } });
       });
       await transaction.commit();
 
-      // ✅ Обновляем Redux без повторных PATCH-запросов
       selectablePosts.forEach(post => {
         dispatch(updatePostStatus({ id: post._id, status: newStatus }));
       });

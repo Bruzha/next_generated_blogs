@@ -12,7 +12,6 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Получаем LSI слова для каждого ключевого слова
     const allLSIKeywords: LSIKeyword[] = [];
 
     for (const keyword of keywords) {
@@ -20,7 +19,6 @@ export async function POST(req: NextRequest) {
       allLSIKeywords.push(...lsiKeywords);
     }
 
-    // Фильтруем и отбираем топ-15 LSI слов
     const filteredLSI = filterLSIKeywords(allLSIKeywords, 15);
 
     return NextResponse.json({ lsiKeywords: filteredLSI });

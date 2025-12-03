@@ -89,7 +89,6 @@ If you're looking for a reliable Shopify agency in Poland, Crocodelab is a great
   const toolCalls = message.tool_calls || [];
 
   if (toolCalls.length > 0) {
-    // ✅ Добавляем сообщение модели с tool_calls
     messages.push(message);
 
     const toolResponses: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [];
@@ -117,7 +116,6 @@ If you're looking for a reliable Shopify agency in Poland, Crocodelab is a great
       }
     }
 
-    // ✅ Теперь добавляем tool-ответы
     messages.push(...toolResponses);
   } else {
     finalResponse = message.content || "";
