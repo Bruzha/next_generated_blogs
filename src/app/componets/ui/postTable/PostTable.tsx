@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import "./style.scss";
@@ -28,16 +29,19 @@ interface PostTableProps {
   onPostUpdate: (postId: string, newStatus: PostType['status']) => void;
   selectedForDeletion: string[];
   setSelectedForDeletion: React.Dispatch<React.SetStateAction<string[]>>;
+  onDateUpdate: (postId: string, newDate: string) => void;
 }
 
 export default function PostTable({
   posts,
   onPostUpdate,
   selectedForDeletion,
-  setSelectedForDeletion
+  setSelectedForDeletion,
+  onDateUpdate
 }: PostTableProps) {
 
   const dispatch = useDispatch<AppDispatch>();
+  const [editingDateId, setEditingDateId] = useState<string | null>(null);
 
   const handleSelectAll = async () => {
     const selectablePosts = posts.filter(post => post.status !== 'Published');
@@ -89,6 +93,21 @@ export default function PostTable({
     setSelectedForDeletion(allSelected ? [] : allIds);
   };
 
+  const handleDateClick = (postId: string) => {
+    setEditingDateId(postId);
+  };
+
+  const handleDateChange = (postId: string, newDate: string) => {
+    if (newDate) {
+      onDateUpdate(postId, newDate);
+      setEditingDateId(null);
+    }
+  };
+
+  const handleDateBlur = () => {
+    setEditingDateId(null);
+  };
+
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', marginBottom: '1rem' }}>
@@ -124,7 +143,22 @@ export default function PostTable({
               <td>
                 <p>{post.status}</p>
               </td>
-              <td>{post.date ? format(new Date(post.date), 'dd.MM.yyyy') : '—'}</td>
+              <td className="dateCell">
+                {editingDateId === post._id ? (
+                  <input
+                    type="date"
+                    className="dateInput"
+                    defaultValue={post.date}
+                    onChange={(e) => handleDateChange(post._id, e.target.value)}
+                    onBlur={handleDateBlur}
+                    autoFocus
+                  />
+                ) : (
+                  <span onClick={() => handleDateClick(post._id)} className="dateText">
+                    {post.date ? format(new Date(post.date), 'dd.MM.yyyy') : '—'}
+                  </span>
+                )}
+              </td>
               <td className="link">
                 <Link href={`/article/${post.slug.current}`} className="blueLink">
                   {post.title}

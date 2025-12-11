@@ -8,7 +8,7 @@ import "./style.scss";
 import LoadingIndicator, { LoadingStage } from './componets/ui/loadingIndicator/LoadingIndicator';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
-import { setPosts, updatePostStatus } from '../store/reducers/postsSlice';
+import { setPosts, updatePostStatus, updatePostDate } from '../store/reducers/postsSlice';
 
 export default function IndexPage() {
   const [loading, setLoading] = useState(false);
@@ -152,6 +152,24 @@ const postsToPublish = freshPosts.filter((post: { status: string; }) => post.sta
     }
   };
 
+  const handleDateUpdate = async (postId: string, newDate: string) => {
+    dispatch(updatePostDate({ id: postId, date: newDate }));
+    try {
+      const response = await fetch('/api/update-article-date', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ articleId: postId, newDate }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update date');
+      }
+    } catch (error) {
+      console.error(`❌ Error updating post date ${postId}:`, error);
+      alert('Failed to update date');
+    }
+  };
+
   return (
     <main className="main">
       {loading ? (
@@ -189,6 +207,7 @@ const postsToPublish = freshPosts.filter((post: { status: string; }) => post.sta
             onPostUpdate={handlePostUpdate}
             selectedForDeletion={selectedForDeletion}
             setSelectedForDeletion={setSelectedForDeletion}
+            onDateUpdate={handleDateUpdate}
           />
         </>
       )}

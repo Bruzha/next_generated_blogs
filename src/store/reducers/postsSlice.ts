@@ -26,8 +26,12 @@ const postsSlice = createSlice({
       const post = state.data.find(p => p._id === action.payload.id);
       if (post) post.status = action.payload.status;
     },
+    updatePostDate(state, action: PayloadAction<{ id: string; date: string }>) {
+      const post = state.data.find(p => p._id === action.payload.id);
+      if (post) post.date = action.payload.date;
+    },
   },
 });
 
-export const { setPosts, addPost, updatePostStatus } = postsSlice.actions;
+export const { setPosts, addPost, updatePostStatus, updatePostDate } = postsSlice.actions;
 export default postsSlice.reducer;
