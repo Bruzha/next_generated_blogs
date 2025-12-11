@@ -40,9 +40,14 @@ export async function generateContentPlan(
   setLoading(true);
   setLoadingStage('content-plan');
 
-  const articleDates = getTuesdaysAndFridaysForNextMonth();
+  //const articleDates = getTuesdaysAndFridaysForNextMonth();
+  const today = new Date;
+  const todays = [today];
+  const date = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  console.log("date:", date);
+  console.log("todays:", todays);
 
-  const selectedCategories = await selectCategoriesForDates(articleDates);
+  const selectedCategories = await selectCategoriesForDates(todays);
 
   if (!selectedCategories || Object.keys(selectedCategories).length === 0) {
     setLoading(false);
@@ -90,14 +95,14 @@ export async function generateContentPlan(
     console.error("Error fetching LSI keywords:", error);
   }
 
-  const categoriesForPrompt: string[] = articleDates.map(d => {
+  const categoriesForPrompt: string[] = todays.map(d => {
     const dateKey = d.toISOString().split('T')[0];
     const catsForDate = selectedCategories[dateKey] || [];
     return catsForDate.join(', ');
   });
   const combinedPromptContentPlan = getContentPlanPrompt(
     categoriesForPrompt,
-    articleDates,
+    todays,
     allKeywords,
     lsiKeywords
   );
@@ -121,8 +126,6 @@ export async function generateContentPlan(
 
   for (let i = 0; i < 1; i++) {
     const contentPlan = combinedContentPlan[i];
-    const d = articleDates[i];
-    const date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
     if (!contentPlan) continue;
 
